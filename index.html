@@ -1,12 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Budget App</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -23,327 +22,361 @@ input,textarea,select{font-family:inherit;outline:none}
 <div id="app"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<script type="text/babel">
-const {useState, useEffect, useRef} = React;
-const TH = {
-JAN:{n:“January”,d:”\uD83E\uDD42 \u2728 \uD83C\uDF86”,bg:”#FFF0F5”,s:”#FFF”,c:”#FFF7FA”,a:”#E8609C”,al:”#FFD6EA”,ad:”#C04878”,tx:”#3A1828”,td:”#C090A8”,br:”#FFE0EC”,dn:”#E05070”,hbg:“linear-gradient(160deg,#FFB0D0,#FFDCEA,#FFF2F8)”,ht:”#D05888”},
-FEB:{n:“February”,d:”\uD83D\uDC8C \uD83C\uDF39 \uD83D\uDC8B”,bg:”#FFF0F2”,s:”#FFF”,c:”#FFF5F5”,a:”#E84068”,al:”#FFD0DA”,ad:”#C82850”,tx:”#2A0810”,td:”#D08090”,br:”#FFD8E0”,dn:”#E04060”,hbg:“linear-gradient(160deg,#FF7090,#FFA0B8,#FFD0DC)”,ht:”#FFF”},
-MAR:{n:“March”,d:”\uD83C\uDF37 \uD83E\uDD8B \uD83C\uDF38”,bg:”#FFF2F6”,s:”#FFF”,c:”#FFF8FA”,a:”#D070A0”,al:”#FFD8EA”,ad:”#A85080”,tx:”#2A1020”,td:”#C898B0”,br:”#FFE0EC”,dn:”#D05070”,hbg:“linear-gradient(160deg,#FFC0DA,#FFD8E8,#FFF4F8)”,ht:”#B85888”},
-APR:{n:“April”,d:”\uD83C\uDF3C \uD83D\uDC30 \uD83E\uDEBA”,bg:”#F8F0FF”,s:”#FFF”,c:”#FBF5FF”,a:”#A070D0”,al:”#E4D0F8”,ad:”#7850A8”,tx:”#201030”,td:”#B098C8”,br:”#E8D4F4”,dn:”#D05070”,hbg:“linear-gradient(160deg,#D4B0F0,#E4C8FF,#F8F0FF)”,ht:”#9068C0”},
-MAY:{n:“May”,d:”\uD83C\uDF3B \uD83D\uDC90 \uD83C\uDF3A”,bg:”#FFF0F4”,s:”#FFF”,c:”#FFF6F8”,a:”#E0708C”,al:”#FFD4E0”,ad:”#C05070”,tx:”#2A1018”,td:”#C890A0”,br:”#FFDCE4”,dn:”#D05060”,hbg:“linear-gradient(160deg,#FFB8D0,#FFD4E4,#FFF4F8)”,ht:”#C85878”},
-JUN:{n:“June”,d:”\uD83C\uDF0A \uD83D\uDC1A \u2600\uFE0F”,bg:”#FFF2F0”,s:”#FFF”,c:”#FFF8F6”,a:”#E87868”,al:”#FFD8D0”,ad:”#C85848”,tx:”#2A1410”,td:”#C89888”,br:”#FFE0D8”,dn:”#E06050”,hbg:“linear-gradient(160deg,#FFB0A0,#FFD0C4,#FFF4F0)”,ht:”#D06858”},
-JUL:{n:“July”,d:”\uD83C\uDF86 \u2728 \uD83C\uDFF0”,bg:”#F4F0FF”,s:”#FFF”,c:”#F8F4FF”,a:”#8868C8”,al:”#D8C8F8”,ad:”#6848A8”,tx:”#181028”,td:”#A890C0”,br:”#E0D4F0”,dn:”#D05070”,hbg:“linear-gradient(160deg,#C0A8F0,#D8C8FF,#F0E8FF)”,ht:”#7858B0”},
-AUG:{n:“August”,d:”\uD83D\uDC51 \uD83D\uDD25 \uD83D\uDCAB”,bg:”#FFF0F2”,s:”#FFF”,c:”#FFF6F4”,a:”#D06878”,al:”#FFD0D8”,ad:”#B04860”,tx:”#2A1018”,td:”#C89098”,br:”#FFD8E0”,dn:”#D05060”,hbg:“linear-gradient(160deg,#FFA8B8,#FFC8D4,#FFF0F4)”,ht:”#C05870”},
-SEP:{n:“September”,d:”\uD83C\uDF41 \uD83D\uDD6F\uFE0F \u2615”,bg:”#FBF0F4”,s:”#FFF”,c:”#FDF6F8”,a:”#C07088”,al:”#F0D0DC”,ad:”#A05070”,tx:”#281418”,td:”#B88898”,br:”#ECDCE4”,dn:”#C85060”,hbg:“linear-gradient(160deg,#E0B0C0,#F0CCD8,#FFF0F4)”,ht:”#A85878”},
-OCT:{n:“October”,d:”\uD83D\uDC7B \uD83D\uDD78\uFE0F \uD83D\uDDA4”,bg:”#F8F0F4”,s:”#FFF”,c:”#FCF4F8”,a:”#B05888”,al:”#E8C0D8”,ad:”#904070”,tx:”#201018”,td:”#B088A0”,br:”#E4D0DC”,dn:”#C04868”,hbg:“linear-gradient(160deg,#D098B8,#E0B8D0,#F8E8F0)”,ht:”#984878”},
-NOV:{n:“November”,d:”\uD83C\uDF7D\uFE0F \uD83D\uDE4F \uD83C\uDF41”,bg:”#FAF0F4”,s:”#FFF”,c:”#FDF4F8”,a:”#C85068”,al:”#F8CCD8”,ad:”#A03850”,tx:”#281018”,td:”#C08898”,br:”#F0D0DC”,dn:”#C04058”,hbg:“linear-gradient(160deg,#E8A0B8,#F0C0D0,#FFF0F4)”,ht:”#B04860”},
-DEC:{n:“December”,d:”\u2744\uFE0F \uD83C\uDF81 \u2728”,bg:”#F8F0F8”,s:”#FFF”,c:”#FCF4FC”,a:”#B048A0”,al:”#E8C0E4”,ad:”#903880”,tx:”#200820”,td:”#B088B0”,br:”#E4D0E4”,dn:”#C04880”,hbg:“linear-gradient(160deg,#D098D0,#E0B8E0,#F8ECF8)”,ht:”#9848A0”}
+<script>
+var h = React.createElement;
+var useState = React.useState;
+var useEffect = React.useEffect;
+var useRef = React.useRef;
+
+var TH = {
+JAN:{n:"January",d:"\uD83E\uDD42 \u2728 \uD83C\uDF86",bg:"#FFF0F5",s:"#FFF",c:"#FFF7FA",a:"#E8609C",al:"#FFD6EA",ad:"#C04878",tx:"#3A1828",td:"#C090A8",br:"#FFE0EC",dn:"#E05070",hbg:"linear-gradient(160deg,#FFB0D0,#FFDCEA,#FFF2F8)",ht:"#D05888"},
+FEB:{n:"February",d:"\uD83D\uDC8C \uD83C\uDF39 \uD83D\uDC8B",bg:"#FFF0F2",s:"#FFF",c:"#FFF5F5",a:"#E84068",al:"#FFD0DA",ad:"#C82850",tx:"#2A0810",td:"#D08090",br:"#FFD8E0",dn:"#E04060",hbg:"linear-gradient(160deg,#FF7090,#FFA0B8,#FFD0DC)",ht:"#FFF"},
+MAR:{n:"March",d:"\uD83C\uDF37 \uD83E\uDD8B \uD83C\uDF38",bg:"#FFF2F6",s:"#FFF",c:"#FFF8FA",a:"#D070A0",al:"#FFD8EA",ad:"#A85080",tx:"#2A1020",td:"#C898B0",br:"#FFE0EC",dn:"#D05070",hbg:"linear-gradient(160deg,#FFC0DA,#FFD8E8,#FFF4F8)",ht:"#B85888"},
+APR:{n:"April",d:"\uD83C\uDF3C \uD83D\uDC30 \uD83E\uDEBA",bg:"#F8F0FF",s:"#FFF",c:"#FBF5FF",a:"#A070D0",al:"#E4D0F8",ad:"#7850A8",tx:"#201030",td:"#B098C8",br:"#E8D4F4",dn:"#D05070",hbg:"linear-gradient(160deg,#D4B0F0,#E4C8FF,#F8F0FF)",ht:"#9068C0"},
+MAY:{n:"May",d:"\uD83C\uDF3B \uD83D\uDC90 \uD83C\uDF3A",bg:"#FFF0F4",s:"#FFF",c:"#FFF6F8",a:"#E0708C",al:"#FFD4E0",ad:"#C05070",tx:"#2A1018",td:"#C890A0",br:"#FFDCE4",dn:"#D05060",hbg:"linear-gradient(160deg,#FFB8D0,#FFD4E4,#FFF4F8)",ht:"#C85878"},
+JUN:{n:"June",d:"\uD83C\uDF0A \uD83D\uDC1A \u2600\uFE0F",bg:"#FFF2F0",s:"#FFF",c:"#FFF8F6",a:"#E87868",al:"#FFD8D0",ad:"#C85848",tx:"#2A1410",td:"#C89888",br:"#FFE0D8",dn:"#E06050",hbg:"linear-gradient(160deg,#FFB0A0,#FFD0C4,#FFF4F0)",ht:"#D06858"},
+JUL:{n:"July",d:"\uD83C\uDF86 \u2728 \uD83C\uDFF0",bg:"#F4F0FF",s:"#FFF",c:"#F8F4FF",a:"#8868C8",al:"#D8C8F8",ad:"#6848A8",tx:"#181028",td:"#A890C0",br:"#E0D4F0",dn:"#D05070",hbg:"linear-gradient(160deg,#C0A8F0,#D8C8FF,#F0E8FF)",ht:"#7858B0"},
+AUG:{n:"August",d:"\uD83D\uDC51 \uD83D\uDD25 \uD83D\uDCAB",bg:"#FFF0F2",s:"#FFF",c:"#FFF6F4",a:"#D06878",al:"#FFD0D8",ad:"#B04860",tx:"#2A1018",td:"#C89098",br:"#FFD8E0",dn:"#D05060",hbg:"linear-gradient(160deg,#FFA8B8,#FFC8D4,#FFF0F4)",ht:"#C05870"},
+SEP:{n:"September",d:"\uD83C\uDF41 \uD83D\uDD6F\uFE0F \u2615",bg:"#FBF0F4",s:"#FFF",c:"#FDF6F8",a:"#C07088",al:"#F0D0DC",ad:"#A05070",tx:"#281418",td:"#B88898",br:"#ECDCE4",dn:"#C85060",hbg:"linear-gradient(160deg,#E0B0C0,#F0CCD8,#FFF0F4)",ht:"#A85878"},
+OCT:{n:"October",d:"\uD83D\uDC7B \uD83D\uDD78\uFE0F \uD83D\uDDA4",bg:"#F8F0F4",s:"#FFF",c:"#FCF4F8",a:"#B05888",al:"#E8C0D8",ad:"#904070",tx:"#201018",td:"#B088A0",br:"#E4D0DC",dn:"#C04868",hbg:"linear-gradient(160deg,#D098B8,#E0B8D0,#F8E8F0)",ht:"#984878"},
+NOV:{n:"November",d:"\uD83C\uDF7D\uFE0F \uD83D\uDE4F \uD83C\uDF41",bg:"#FAF0F4",s:"#FFF",c:"#FDF4F8",a:"#C85068",al:"#F8CCD8",ad:"#A03850",tx:"#281018",td:"#C08898",br:"#F0D0DC",dn:"#C04058",hbg:"linear-gradient(160deg,#E8A0B8,#F0C0D0,#FFF0F4)",ht:"#B04860"},
+DEC:{n:"December",d:"\u2744\uFE0F \uD83C\uDF81 \u2728",bg:"#F8F0F8",s:"#FFF",c:"#FCF4FC",a:"#B048A0",al:"#E8C0E4",ad:"#903880",tx:"#200820",td:"#B088B0",br:"#E4D0E4",dn:"#C04880",hbg:"linear-gradient(160deg,#D098D0,#E0B8E0,#F8ECF8)",ht:"#9848A0"}
 };
-const MK = [“JAN”,“FEB”,“MAR”,“APR”,“MAY”,“JUN”,“JUL”,“AUG”,“SEP”,“OCT”,“NOV”,“DEC”];
-const FT = [{name:“WiFi”,cost:85.90},{name:“BGE”,cost:150},{name:“Apple TV/Music”,cost:6.35},{name:“Disney/Hulu”,cost:13.77},{name:“Prime”,cost:15.89},{name:“Car note”,cost:535},{name:“Phone”,cost:79},{name:“Rent”,cost:1920},{name:“Progressive apt”,cost:14.34},{name:“Progressive car”,cost:236.86},{name:“HBO Max”,cost:11.65},{name:“2TB Storage”,cost:10.29},{name:“Fed Stu Loans”,cost:470},{name:“Private Stu Loans”,cost:495},{name:“Google 1 space”,cost:3},{name:“Doordash”,cost:10},{name:“Netflix”,cost:8.52},{name:“Acorns Sub”,cost:3},{name:“Kindle Unlimited”,cost:12.71}];
-const VT = [{name:“Acorns”,budget:300},{name:“Gas/car wash”,budget:150},{name:“Groceries (CC)”,budget:200},{name:“EZ-Pass”,budget:120},{name:“Apple CC”,budget:275},{name:“Me Fund”,budget:202},{name:“PCM”,budget:100},{name:“Other”,budget:0}];
-const WL_T = [{item:“Coach Tabby”,price:null,checked:false},{item:“T.B Fleming”,price:null,checked:false},{item:“Pink Kindle”,price:null,checked:true},{item:“T.B Studs”,price:null,checked:false},{item:“Coach sunglasses”,price:119,checked:false},{item:“La nuit blanche”,price:50,checked:false},{item:“Bose quiet comfort”,price:null,checked:false},{item:“Coach zip card”,price:69,checked:false}];
-const cloneWL = () => WL_T.map(w => ({…w}));
-const LS_KEY = “budget_app_v3”;
-function loadAll() {
-try { const d = localStorage.getItem(LS_KEY); if (d) return JSON.parse(d); } catch(e) {}
-return null;
-}
-function saveAll(d) {
-try { localStorage.setItem(LS_KEY, JSON.stringify(d)); } catch(e) {}
-}
-function initMonths() {
-const m = {};
+var MK = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+var FT = [{name:"WiFi",cost:85.90},{name:"BGE",cost:150},{name:"Apple TV/Music",cost:6.35},{name:"Disney/Hulu",cost:13.77},{name:"Prime",cost:15.89},{name:"Car note",cost:535},{name:"Phone",cost:79},{name:"Rent",cost:1920},{name:"Progressive apt",cost:14.34},{name:"Progressive car",cost:236.86},{name:"HBO Max",cost:11.65},{name:"2TB Storage",cost:10.29},{name:"Fed Stu Loans",cost:470},{name:"Private Stu Loans",cost:495},{name:"Google 1 space",cost:3},{name:"Doordash",cost:10},{name:"Netflix",cost:8.52},{name:"Acorns Sub",cost:3},{name:"Kindle Unlimited",cost:12.71}];
+var VT = [{name:"Acorns",budget:300},{name:"Gas/car wash",budget:150},{name:"Groceries (CC)",budget:200},{name:"EZ-Pass",budget:120},{name:"Apple CC",budget:275},{name:"Me Fund",budget:202},{name:"PCM",budget:100},{name:"Other",budget:0}];
+var WL_T = [{item:"Coach Tabby”,price:null,checked:false},{item:“T.B Fleming”,price:null,checked:false},{item:“Pink Kindle”,price:null,checked:true},{item:“T.B Studs”,price:null,checked:false},{item:“Coach sunglasses”,price:119,checked:false},{item:“La nuit blanche”,price:50,checked:false},{item:“Bose quiet comfort”,price:null,checked:false},{item:“Coach zip card”,price:69,checked:false}];
+function cloneWL(){return WL_T.map(function(w){return{item:w.item,price:w.price,checked:w.checked};});}
+var LS_KEY = “budget_app_v3”;
+function loadAll(){try{var d=localStorage.getItem(LS_KEY);if(d)return JSON.parse(d);}catch(e){}return null;}
+function saveAll(d){try{localStorage.setItem(LS_KEY,JSON.stringify(d));}catch(e){}}
+function initMonths(){
+var m={};
 m.JAN={income:6568.29,lastMonthSurplus:0,dates:“26dec-24jan”,affirmations:[“money flows to me easily and consistently”],notes:“Put Feb/March 20th check in savings for following month.”,fixedBills:[{name:“WiFi”,amount:83.90,isPaid:true},{name:“BGE”,amount:91.85,isPaid:true},{name:“Apple TV/Music”,amount:6.35,isPaid:true},{name:“Disney/Hulu”,amount:10.99,isPaid:true},{name:“Prime”,amount:15.89,isPaid:true},{name:“Car note”,amount:574.10,isPaid:true},{name:“Phone”,amount:165,isPaid:true},{name:“Rent”,amount:1906.11,isPaid:true},{name:“Progressive apt”,amount:14.33,isPaid:true},{name:“Progressive car”,amount:236.86,isPaid:true},{name:“HBO Max”,amount:11.65,isPaid:true},{name:“2TB Storage”,amount:10.29,isPaid:true},{name:“Fed Stu Loans”,amount:892.71,isPaid:true},{name:“Private Stu Loans”,amount:479.30,isPaid:true},{name:“Google 1”,amount:2.99,isPaid:true},{name:“Doordash”,amount:9.99,isPaid:true},{name:“Netflix”,amount:8.52,isPaid:true},{name:“Acorns Sub”,amount:3,isPaid:true},{name:“Kindle Unlimited”,amount:12.71,isPaid:true}],variableBills:[{name:“Acorns”,budget:300,spent:300},{name:“Gas”,budget:150,spent:139.02},{name:“Groceries (CC)”,budget:200,spent:60.21},{name:“EZ-Pass”,budget:120,spent:120},{name:“Apple CC”,budget:275,spent:162},{name:“Me Fund”,budget:202,spent:1046.78},{name:“PCM”,budget:100,spent:100},{name:“Other”,budget:0,spent:100}],transactions:[{store:“Amazon”,amt:49.84},{store:“Apple Card”,amt:162},{store:“Rent”,amt:1906.11},{store:“Acorns”,amt:75},{store:“Acorns”,amt:75},{store:“Gas”,amt:40},{store:“BGE”,amt:91.85},{store:“Firstmark”,amt:479.30},{store:“Amazon”,amt:892.71},{store:“Acorns”,amt:75},{store:“EZ Pass”,amt:60},{store:“Rho”,amt:574.10},{store:“Phone bill”,amt:165},{store:“Acorns”,amt:75},{store:“Progressive”,amt:236.86},{store:“EZPass”,amt:60},{store:“Gas”,amt:35.37}],wishList:cloneWL()};
 m.FEB={income:5403,lastMonthSurplus:0,dates:“25jan-27feb”,affirmations:[”$$ loves me more”,“spoiled by the universe”,“wealth is obsessed with me”],notes:“REMEMBER TO ADD BOTH SAVINGS INTO CHECKINGS!!! $75 Acorns for march.”,fixedBills:[{name:“WiFi”,amount:85.90,isPaid:true},{name:“BGE”,amount:92.86,isPaid:true},{name:“Apple TV/Music”,amount:6.35,isPaid:true},{name:“Disney/Hulu”,amount:13.77,isPaid:true},{name:“Prime”,amount:15.89,isPaid:true},{name:“Car note”,amount:530.82,isPaid:true},{name:“Phone”,amount:79,isPaid:true},{name:“Rent”,amount:1875.59,isPaid:true},{name:“Progressive apt”,amount:14.34,isPaid:true},{name:“Progressive car”,amount:236.85,isPaid:true},{name:“HBO Max”,amount:11.65,isPaid:true},{name:“2TB Storage”,amount:10.29,isPaid:true},{name:“Fed Stu Loans”,amount:463.26,isPaid:true},{name:“Private Stu Loans”,amount:493.67,isPaid:true},{name:“Google 1”,amount:2.99,isPaid:true},{name:“Doordash”,amount:9.99,isPaid:true},{name:“Netflix”,amount:8.52,isPaid:true},{name:“Acorns Sub”,amount:3,isPaid:true},{name:“Kindle Unlimited”,amount:12.71,isPaid:true}],variableBills:[{name:“Acorns”,budget:300,spent:300},{name:“Gas/car wash”,budget:150,spent:135.58},{name:“Groceries (CC)”,budget:200,spent:202.85},{name:“EZ-Pass”,budget:120,spent:120},{name:“Apple CC”,budget:275,spent:275},{name:“Me Fund”,budget:202,spent:195.67},{name:“PCM”,budget:100,spent:100}],transactions:[{store:“Rent”,amt:1875.59},{store:“Groceries”,amt:95.31},{store:“AppleCO”,amt:275},{store:“Acorns”,amt:75},{store:“B.G.E.”,amt:92.86},{store:“Acorns”,amt:75},{store:“EZ Pass”,amt:60},{store:“Rhe Baby”,amt:530.82},{store:“Rhe Insurance”,amt:236.85},{store:“Acorns”,amt:75},{store:“Phone Bill”,amt:79},{store:“EZ Pass”,amt:60},{store:“Private Stu Loans”,amt:493.67},{store:“Fed Stu Loans”,amt:463.26}],wishList:cloneWL()};
 m.MAR={income:5403,lastMonthSurplus:0,dates:“01mar-25mar”,affirmations:[“i am blooming into wealth.”,“what i plant now multiplies later.”],notes:“Surprise defer due to transferring incorrect amount.”,fixedBills:[{name:“WiFi”,amount:85.90,isPaid:true},{name:“BGE”,amount:94.36,isPaid:true},{name:“Apple TV/Music”,amount:6.35,isPaid:true},{name:“Disney/Hulu”,amount:13.77,isPaid:true},{name:“Prime”,amount:15.89,isPaid:true},{name:“Car note”,amount:560.82,isPaid:true},{name:“Phone”,amount:121.97,isPaid:true},{name:“Rent”,amount:1902.96,isPaid:true},{name:“Progressive apt”,amount:14.33,isPaid:true},{name:“Progressive car”,amount:236.85,isPaid:true},{name:“HBO Max”,amount:11.65,isPaid:true},{name:“2TB Storage”,amount:10.29,isPaid:true},{name:“Fed Stu Loans”,amount:463.26,isPaid:true},{name:“Private Stu Loans”,amount:493.67,isPaid:true},{name:“Google 1”,amount:2.99,isPaid:true},{name:“Netflix”,amount:18.52,isPaid:true},{name:“Acorns Sub”,amount:3,isPaid:true},{name:“Kindle Unlimited”,amount:12.71,isPaid:true},{name:“ChatGPT”,amount:21.20,isPaid:true}],variableBills:[{name:“Acorns”,budget:300,spent:300},{name:“Gas/car wash”,budget:150,spent:127.23},{name:“Groceries (CC)”,budget:200,spent:173.11},{name:“EZ-Pass”,budget:120,spent:120},{name:“Apple CC”,budget:275,spent:275},{name:“Me Fund”,budget:202,spent:155.98},{name:“PCM”,budget:100,spent:100}],transactions:[{store:“Rent”,amt:1902.16},{store:“Groceries”,amt:120.68},{store:“AppleCO”,amt:275},{store:“Acorns”,amt:75},{store:“Gas”,amt:94.38},{store:“Advantage”,amt:463.98},{store:“Private Stu Loans”,amt:493.67},{store:“Acorns”,amt:75},{store:“Acorns”,amt:75},{store:“Ezpass”,amt:60},{store:“Acorns”,amt:75}],wishList:cloneWL()};
 m.APR={income:5403,lastMonthSurplus:0,dates:“26mar-27apr”,affirmations:[“I keep finding financial blessings everywhere I look”,“My finances are resurrecting into abundance”],notes:“397.80 camera lens.”,fixedBills:[{name:“WiFi”,amount:85.90,isPaid:true},{name:“BGE”,amount:62.52,isPaid:true},{name:“Apple TV/Music”,amount:6.35,isPaid:true},{name:“Disney/Hulu”,amount:13.77,isPaid:true},{name:“Prime”,amount:15.89,isPaid:true},{name:“Car note”,amount:530.82,isPaid:true},{name:“Phone”,amount:79,isPaid:true},{name:“Rent”,amount:1888.72,isPaid:true},{name:“Progressive apt”,amount:14.34,isPaid:true},{name:“Progressive car”,amount:236.85,isPaid:true},{name:“HBO Max”,amount:0,isPaid:false},{name:“2TB Storage”,amount:10.29,isPaid:true},{name:“Fed Stu Loans”,amount:463.26,isPaid:true},{name:“Private Stu Loans”,amount:493.67,isPaid:true},{name:“Google 1”,amount:2.99,isPaid:true},{name:“Netflix”,amount:8.52,isPaid:true},{name:“Acorns Sub”,amount:3,isPaid:true},{name:“Kindle Unlimited”,amount:12.71,isPaid:true},{name:“Claude”,amount:21.20,isPaid:true}],variableBills:[{name:“Acorns”,budget:300,spent:300},{name:“Gas/car wash”,budget:150,spent:89.05},{name:“Groceries (CC)”,budget:200,spent:203.30},{name:“EZ-Pass”,budget:120,spent:60},{name:“Apple CC”,budget:275,spent:275},{name:“Me Fund”,budget:202,spent:186.17},{name:“PCM”,budget:100,spent:100}],transactions:[{store:“Acorns”,amt:75},{store:“Instacart”,amt:68.55},{store:“Safeway”,amt:20.58},{store:“CVS”,amt:19.48},{store:“Apple”,amt:275},{store:“Wi-fi”,amt:85.90},{store:“Bge”,amt:62.52},{store:“Acorns”,amt:3},{store:“Advantage”,amt:463.26},{store:“Private stu loans”,amt:493.67},{store:“Gas”,amt:53.05},{store:“Acorns”,amt:75},{store:“EZ-Pass”,amt:60},{store:“Acorns”,amt:75}],wishList:cloneWL()};
-const pn = {MAY:“Start prepping Disney budget \u2728”,JUN:“Last month before Disney \u2014 lock in spending!”,JUL:“Disney month! Enjoy every second \uD83C\uDFF0”,AUG:“Post-Disney reset. Back to the grind \uD83D\uDC51”,SEP:“Q4 planning \u2014 finish the year strong \u2615”,OCT:“Review annual subscriptions before renewal season \uD83D\uDC7B”,NOV:“Holiday budget prep \u2014 set gift spending limits \uD83C\uDF7D\uFE0F”,DEC:“Year-end reflection. Celebrate how far you came \uD83C\uDF84”};
-MK.slice(4).forEach(k => {
-m[k] = {income:5403,lastMonthSurplus:0,dates:””,affirmations:[””],notes:pn[k]||””,
-fixedBills:FT.map(b=>({name:b.name,amount:b.cost,isPaid:false})),
-variableBills:VT.map(b=>({…b,spent:0})),
+var pn={MAY:“Start prepping Disney budget”,JUN:“Last month before Disney - lock in spending!”,JUL:“Disney month! Enjoy every second”,AUG:“Post-Disney reset. Back to the grind”,SEP:“Q4 planning - finish the year strong”,OCT:“Review annual subscriptions before renewal season”,NOV:“Holiday budget prep - set gift spending limits”,DEC:“Year-end reflection. Celebrate how far you came”};
+MK.slice(4).forEach(function(k){
+m[k]={income:5403,lastMonthSurplus:0,dates:””,affirmations:[””],notes:pn[k]||””,
+fixedBills:FT.map(function(b){return{name:b.name,amount:b.cost,isPaid:false};}),
+variableBills:VT.map(function(b){return{name:b.name,budget:b.budget,spent:0};}),
 transactions:[],wishList:cloneWL()};
 });
 return m;
 }
-const fmt = n => “$”+Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,”,”);
-const fmts = n => (n<0?”-”:””)+fmt(n);
-const Btn = ({onClick, label, primary, danger, T}) => (
-<button onClick={onClick} style={{padding:“8px 20px”,background:primary?T.a:danger?“transparent”:“rgba(255,255,255,0.7)”,border:danger?`1px solid ${T.dn}33`:“none”,borderRadius:“20px”,color:primary?“white”:danger?T.dn:T.td,fontSize:“12px”,fontWeight:600,boxShadow:primary?`0 2px 8px ${T.a}44`:“none”,fontFamily:“inherit”,cursor:“pointer”}}>{label}</button>
+var fmt=function(n){return “$”+Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,”,”);};
+var fmts=function(n){return(n<0?”-”:””)+fmt(n);};
+
+function Btn(p){
+return h(“button”,{onClick:p.onClick,style:{padding:“8px 20px”,background:p.primary?p.T.a:p.danger?“transparent”:“rgba(255,255,255,0.7)”,border:p.danger?“1px solid “+p.T.dn+“33”:“none”,borderRadius:“20px”,color:p.primary?“white”:p.danger?p.T.dn:p.T.td,fontSize:“12px”,fontWeight:600,boxShadow:p.primary?“0 2px 8px “+p.T.a+“44”:“none”,fontFamily:“inherit”,cursor:“pointer”}},p.label);
+}
+
+function App(){
+var lr=useRef(false);
+var _m=useState(initMonths),months=_m[0],setMonths=_m[1];
+var _cm=useState(“APR”),cm=_cm[0],setCm=_cm[1];
+var _tab=useState(“home”),tab=_tab[0],setTab=_tab[1];
+var _ea=useState(false),editAff=_ea[0],setEditAff=_ea[1];
+var _ta=useState(””),tempAff=_ta[0],setTempAff=_ta[1];
+var _at=useState(false),addTx=_at[0],setAddTx=_at[1];
+var _ts=useState(””),txS=_ts[0],setTxS=_ts[1];
+var _txa=useState(””),txA=_txa[0],setTxA=_txa[1];
+var _txn=useState(””),txN=_txn[0],setTxN=_txn[1];
+var _txc=useState(””),txC=_txc[0],setTxC=_txc[1];
+var _eb=useState(null),eBill=_eb[0],setEBill=_eb[1];
+var _ebn=useState(””),eBN=_ebn[0],setEBN=_ebn[1];
+var _eba=useState(””),eBA=_eba[0],setEBA=_eba[1];
+var _ab=useState(false),aBill=_ab[0],setABill=_ab[1];
+var _nb=useState(””),nBN=_nb[0],setNBN=_nb[1];
+var _nba=useState(””),nBA=_nba[0],setNBA=_nba[1];
+var _ev=useState(null),eVar=_ev[0],setEVar=_ev[1];
+var _evn=useState(””),eVN=_evn[0],setEVN=_evn[1];
+var _evb=useState(””),eVB=_evb[0],setEVB=_evb[1];
+var _evs=useState(””),eVS=_evs[0],setEVS=_evs[1];
+var _av=useState(false),aVar=_av[0],setAVar=_av[1];
+var _nvn=useState(””),nVN=_nvn[0],setNVN=_nvn[1];
+var _nvb=useState(””),nVB=_nvb[0],setNVB=_nvb[1];
+var _et=useState(null),eTx=_et[0],setETx=_et[1];
+var _ets=useState(””),eTxS=_ets[0],setETxS=_ets[1];
+var _eta=useState(””),eTxA=_eta[0],setETxA=_eta[1];
+var _etn=useState(””),eTxN=_etn[0],setETxN=_etn[1];
+var _etc=useState(””),eTxC=_etc[0],setETxC=_etc[1];
+var _ei=useState(false),eInc=_ei[0],setEInc=_ei[1];
+var _ti=useState(””),tInc=_ti[0],setTInc=_ti[1];
+var _els=useState(false),eLS=_els[0],setELS=_els[1];
+var _tls=useState(””),tLS=_tls[0],setTLS=_tls[1];
+var _edt=useState(false),eDt=_edt[0],setEDt=_edt[1];
+var _tdt=useState(””),tDt=_tdt[0],setTDt=_tdt[1];
+var _ew=useState(null),eW=_ew[0],setEW=_ew[1];
+var _ewn=useState(””),eWN=_ewn[0],setEWN=_ewn[1];
+var _ewp=useState(””),eWP=_ewp[0],setEWP=_ewp[1];
+var _aw=useState(false),aW=_aw[0],setAW=_aw[1];
+var _nwn=useState(””),nWN=_nwn[0],setNWN=_nwn[1];
+var _nwp=useState(””),nWP=_nwp[0],setNWP=_nwp[1];
+var _db=useState(5505.04),dBal=_db[0],setDBal=_db[1];
+var _da=useState(23.24),dAPR=_da[0],setDAPR=_da[1];
+var _dp=useState(275),dPay=_dp[0],setDPay=_dp[1];
+var _dl=useState(6000),dLim=_dl[0],setDLim=_dl[1];
+var _edb=useState(false),eDbt=_edb[0],setEDbt=_edb[1];
+var _en=useState(false),editNotes=_en[0],setEditNotes=_en[1];
+var _tn=useState(””),tempNotes=_tn[0],setTempNotes=_tn[1];
+
+useEffect(function(){
+var saved=loadAll();
+if(saved){
+if(saved.months)setMonths(saved.months);
+if(saved.debt){
+if(saved.debt.bal!=null)setDBal(saved.debt.bal);
+if(saved.debt.apr!=null)setDAPR(saved.debt.apr);
+if(saved.debt.pay!=null)setDPay(saved.debt.pay);
+if(saved.debt.lim!=null)setDLim(saved.debt.lim);
+}
+}
+lr.current=true;
+},[]);
+
+function save(u){setMonths(u);if(lr.current)saveAll({months:u,debt:{bal:dBal,apr:dAPR,pay:dPay,lim:dLim}});}
+function saveDbt(b,a,p,l){if(lr.current)saveAll({months:months,debt:{bal:b,apr:a,pay:p,lim:l}});}
+
+var T=TH[cm],data=months[cm];
+var fixT=data.fixedBills.reduce(function(s,b){return s+(b.amount||0);},0);
+var fixPd=data.fixedBills.reduce(function(s,b){return b.isPaid?s+(b.amount||0):s;},0);
+var fixPn=fixT-fixPd;
+var varT=data.variableBills.reduce(function(s,b){return s+b.budget;},0);
+var varS=data.variableBills.reduce(function(s,b){return s+b.spent;},0);
+var txT=data.transactions.reduce(function(s,t){return s+t.amt;},0);
+var lms=data.lastMonthSurplus||0;
+var totA=data.income+lms;
+var ndb=totA-txT;
+var sur=ndb;
+var pdCt=data.fixedBills.filter(function(b){return b.isPaid;}).length;
+var blCt=data.fixedBills.length||1;
+var pdP=Math.round((pdCt/blCt)*100);
+
+var cs={background:T.s,borderRadius:“16px”,padding:“16px”,border:“1px solid “+T.br,boxShadow:“0 2px 8px “+T.a+“08”};
+var is_={width:“100%”,padding:“10px”,background:T.c,border:“1.5px solid “+T.br,borderRadius:“12px”,fontSize:“14px”,color:T.tx,marginBottom:“6px”,boxSizing:“border-box”,fontFamily:“inherit”,outline:“none”};
+var tabs_=[{k:“home”,l:“Home”,i:”\u25CE”},{k:“fixed”,l:“Bills”,i:”\uD83D\uDCCB”},{k:“flex”,l:“Flex”,i:”\u25D0”},{k:“spent”,l:“Spent”,i:”\uD83D\uDCB8”},{k:“wish”,l:“Wish”,i:”\u273F”},{k:“debt”,l:“Debt”,i:”\uD83D\uDCC9”}];
+
+// — Handlers —
+function togBill(i){var u=Object.assign({},months);var b=data.fixedBills.slice();b[i]=Object.assign({},b[i],{isPaid:!b[i].isPaid});u[cm]=Object.assign({},u[cm],{fixedBills:b});save(u);}
+function openBill(i){var b=data.fixedBills[i];setEBill(i);setEBN(b.name);setEBA((b.amount||0).toString());}
+function saveBill(){var u=Object.assign({},months);var b=data.fixedBills.slice();b[eBill]={name:eBN,amount:parseFloat(eBA)||0,isPaid:b[eBill].isPaid};u[cm]=Object.assign({},u[cm],{fixedBills:b});save(u);setEBill(null);}
+function delBill(i){var u=Object.assign({},months);var b=data.fixedBills.slice();b.splice(i,1);u[cm]=Object.assign({},u[cm],{fixedBills:b});save(u);setEBill(null);}
+function addBillFn(){if(!nBN)return;var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{fixedBills:data.fixedBills.concat([{name:nBN,amount:parseFloat(nBA)||0,isPaid:false}])});save(u);setNBN(””);setNBA(””);setABill(false);}
+function openVar(i){var b=data.variableBills[i];setEVar(i);setEVN(b.name);setEVB(b.budget.toString());setEVS(b.spent.toString());}
+function saveVar(){var u=Object.assign({},months);var b=data.variableBills.slice();b[eVar]={name:eVN,budget:parseFloat(eVB)||0,spent:parseFloat(eVS)||0};u[cm]=Object.assign({},u[cm],{variableBills:b});save(u);setEVar(null);}
+function delVar(i){var u=Object.assign({},months);var b=data.variableBills.slice();b.splice(i,1);u[cm]=Object.assign({},u[cm],{variableBills:b});save(u);setEVar(null);}
+function addNV(){if(!nVN)return;var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{variableBills:data.variableBills.concat([{name:nVN,budget:parseFloat(nVB)||0,spent:0}])});save(u);setNVN(””);setNVB(””);setAVar(false);}
+function addTxn(){if(!txS||!txA)return;var u=Object.assign({},months);var nt={store:txS,amt:parseFloat(txA)||0,note:txN,cat:txC||””};var tx=data.transactions.concat([nt]);u[cm]=Object.assign({},u[cm],{transactions:tx});if(txC){var vb=data.variableBills.slice();var ci=vb.findIndex(function(b){return b.name===txC;});if(ci>=0){vb[ci]=Object.assign({},vb[ci],{spent:tx.filter(function(t){return t.cat===txC;}).reduce(function(s,t){return s+t.amt;},0)});u[cm]=Object.assign({},u[cm],{variableBills:vb});}}save(u);setTxS(””);setTxA(””);setTxN(””);setTxC(””);setAddTx(false);}
+function openTx(i){var t=data.transactions[i];setETx(i);setETxS(t.store);setETxA(t.amt.toString());setETxN(t.note||””);setETxC(t.cat||””);}
+function saveTx(){var u=Object.assign({},months);var tx=data.transactions.slice();var oc=tx[eTx].cat||””;tx[eTx]=Object.assign({},tx[eTx],{store:eTxS,amt:parseFloat(eTxA)||0,note:eTxN,cat:eTxC||””});u[cm]=Object.assign({},u[cm],{transactions:tx});[oc,eTxC].filter(Boolean).forEach(function(cat){var vb=u[cm].variableBills.slice();var ci=vb.findIndex(function(b){return b.name===cat;});if(ci>=0){vb[ci]=Object.assign({},vb[ci],{spent:tx.filter(function(t){return t.cat===cat;}).reduce(function(s,t){return s+t.amt;},0)});u[cm]=Object.assign({},u[cm],{variableBills:vb});}});save(u);setETx(null);}
+function delTx(i){var u=Object.assign({},months);var tx=data.transactions.slice();var oc=tx[i].cat||””;tx.splice(i,1);u[cm]=Object.assign({},u[cm],{transactions:tx});if(oc){var vb=u[cm].variableBills.slice();var ci=vb.findIndex(function(b){return b.name===oc;});if(ci>=0){vb[ci]=Object.assign({},vb[ci],{spent:tx.filter(function(t){return t.cat===oc;}).reduce(function(s,t){return s+t.amt;},0)});u[cm]=Object.assign({},u[cm],{variableBills:vb});}}save(u);setETx(null);}
+function togWish(i){var u=Object.assign({},months);var w=data.wishList.slice();w[i]=Object.assign({},w[i],{checked:!w[i].checked});u[cm]=Object.assign({},u[cm],{wishList:w});save(u);}
+function saveAff(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{affirmations:tempAff.split(”\n”).filter(function(l){return l.trim();})});save(u);setEditAff(false);}
+function saveNotes(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{notes:tempNotes});save(u);setEditNotes(false);}
+
+// Debt calc
+var mr=dAPR/100/12;
+var po=dLim-dBal;
+var pp=Math.max(0,Math.round((po/dLim)*100));
+function calcPayoff(p){var b=dBal,m=0,ti=0;if(p<=b*mr)return{m:999,ti:99999};while(b>0&&m<360){var i2=b*mr;ti+=i2;b=b+i2-p;if(b<0)b=0;m++;}return{m:m,ti:Math.round(ti*100)/100};}
+var curPay=calcPayoff(dPay);
+var mi=Math.round(dBal*mr*100)/100;
+var pp2=Math.round((dPay-mi)*100)/100;
+var pd=new Date();pd.setMonth(pd.getMonth()+curPay.m);
+var ps=curPay.m<360?pd.toLocaleDateString(“en-US”,{month:“long”,year:“numeric”}):“Never”;
+
+// — RENDER HELPERS —
+function mkInput(val,onChange,extra){return h(“input”,Object.assign({value:val,onChange:function(e){onChange(e.target.value);},style:Object.assign({},is_,extra||{})},extra&&extra.type?{type:extra.type}:{},extra&&extra.placeholder?{placeholder:extra.placeholder}:{}));}
+
+// — BUILD SECTIONS —
+function renderHeader(){
+var affSection;
+if(!editAff){
+affSection=h(“div”,{onClick:function(){setEditAff(true);setTempAff(data.affirmations.join(”\n”));},style:{cursor:“pointer”}},
+data.affirmations.map(function(a,i){return h(“div”,{key:i,style:{fontSize:“19px”,fontFamily:”‘Playfair Display’,serif”,fontStyle:“italic”,color:T.ht,lineHeight:1.7}},a);})
 );
-function App() {
-const loadedRef = useRef(false);
-const [months, setMonths] = useState(initMonths);
-const [cm, setCm] = useState(“APR”);
-const [tab, setTab] = useState(“home”);
-const [editAff, setEditAff] = useState(false);
-const [tempAff, setTempAff] = useState(””);
-const [addTx, setAddTx] = useState(false);
-const [txS, setTxS] = useState(””);
-const [txA, setTxA] = useState(””);
-const [txN, setTxN] = useState(””);
-const [txC, setTxC] = useState(””);
-const [eBill, setEBill] = useState(null);
-const [eBN, setEBN] = useState(””);
-const [eBA, setEBA] = useState(””);
-const [aBill, setABill] = useState(false);
-const [nBN, setNBN] = useState(””);
-const [nBA, setNBA] = useState(””);
-const [eVar, setEVar] = useState(null);
-const [eVN, setEVN] = useState(””);
-const [eVB, setEVB] = useState(””);
-const [eVS, setEVS] = useState(””);
-const [aVar, setAVar] = useState(false);
-const [nVN, setNVN] = useState(””);
-const [nVB, setNVB] = useState(””);
-const [eTx, setETx] = useState(null);
-const [eTxS, setETxS] = useState(””);
-const [eTxA, setETxA] = useState(””);
-const [eTxN, setETxN] = useState(””);
-const [eTxC, setETxC] = useState(””);
-const [eInc, setEInc] = useState(false);
-const [tInc, setTInc] = useState(””);
-const [eLS, setELS] = useState(false);
-const [tLS, setTLS] = useState(””);
-const [eDt, setEDt] = useState(false);
-const [tDt, setTDt] = useState(””);
-const [eW, setEW] = useState(null);
-const [eWN, setEWN] = useState(””);
-const [eWP, setEWP] = useState(””);
-const [aW, setAW] = useState(false);
-const [nWN, setNWN] = useState(””);
-const [nWP, setNWP] = useState(””);
-const [dBal, setDBal] = useState(5505.04);
-const [dAPR, setDAPR] = useState(23.24);
-const [dPay, setDPay] = useState(275);
-const [dLim, setDLim] = useState(6000);
-const [eDbt, setEDbt] = useState(false);
-const [editNotes, setEditNotes] = useState(false);
-const [tempNotes, setTempNotes] = useState(””);
-useEffect(() => {
-const saved = loadAll();
-if (saved) {
-if (saved.months) setMonths(saved.months);
-if (saved.debt) {
-setDBal(saved.debt.bal ?? 5505.04);
-setDAPR(saved.debt.apr ?? 23.24);
-setDPay(saved.debt.pay ?? 275);
-setDLim(saved.debt.lim ?? 6000);
-}
-}
-loadedRef.current = true;
-}, []);
-const save = u => {
-setMonths(u);
-if (loadedRef.current) saveAll({months: u, debt: {bal: dBal, apr: dAPR, pay: dPay, lim: dLim}});
-};
-const saveDebtState = (bal, apr, pay, lim) => {
-if (loadedRef.current) saveAll({months, debt: {bal, apr, pay, lim}});
-};
-const T = TH[cm];
-const data = months[cm];
-const fixT = data.fixedBills.reduce((s,b) => s+(b.amount||0), 0);
-const fixPd = data.fixedBills.reduce((s,b) => b.isPaid ? s+(b.amount||0) : s, 0);
-const fixPn = fixT - fixPd;
-const varT = data.variableBills.reduce((s,b) => s+b.budget, 0);
-const varS = data.variableBills.reduce((s,b) => s+b.spent, 0);
-const txT = data.transactions.reduce((s,t) => s+t.amt, 0);
-const lms = data.lastMonthSurplus || 0;
-const totA = data.income + lms;
-const ndb = totA - txT;
-const sur = ndb;
-const pdCt = data.fixedBills.filter(b => b.isPaid).length;
-const blCt = data.fixedBills.length || 1;
-const pdP = Math.round((pdCt/blCt)*100);
-const cs = {background:T.s,borderRadius:“16px”,padding:“16px”,border:`1px solid ${T.br}`,boxShadow:`0 2px 8px ${T.a}08`};
-const is_ = {width:“100%”,padding:“10px”,background:T.c,border:`1.5px solid ${T.br}`,borderRadius:“12px”,fontSize:“14px”,color:T.tx,marginBottom:“6px”,boxSizing:“border-box”,fontFamily:“inherit”,outline:“none”};
-const tabs_ = [{k:“home”,l:“Home”,i:”\u25CE”},{k:“fixed”,l:“Bills”,i:”\uD83D\uDCCB”},{k:“flex”,l:“Flex”,i:”\u25D0”},{k:“spent”,l:“Spent”,i:”\uD83D\uDCB8”},{k:“wish”,l:“Wish”,i:”\u273F”},{k:“debt”,l:“Debt”,i:”\uD83D\uDCC9”}];
-const togBill = i => { const u={…months}; const b=[…u[cm].fixedBills]; b[i]={…b[i],isPaid:!b[i].isPaid}; u[cm]={…u[cm],fixedBills:b}; save(u); };
-const openBill = i => { const b=data.fixedBills[i]; setEBill(i); setEBN(b.name); setEBA((b.amount||0).toString()); };
-const saveBill = () => { const u={…months}; const b=[…u[cm].fixedBills]; b[eBill]={name:eBN,amount:parseFloat(eBA)||0,isPaid:b[eBill].isPaid}; u[cm]={…u[cm],fixedBills:b}; save(u); setEBill(null); };
-const delBill = i => { const u={…months}; const b=[…u[cm].fixedBills]; b.splice(i,1); u[cm]={…u[cm],fixedBills:b}; save(u); setEBill(null); };
-const addBillFn = () => { if(!nBN)return; const u={…months}; u[cm]={…u[cm],fixedBills:[…u[cm].fixedBills,{name:nBN,amount:parseFloat(nBA)||0,isPaid:false}]}; save(u); setNBN(””); setNBA(””); setABill(false); };
-const openVar = i => { const b=data.variableBills[i]; setEVar(i); setEVN(b.name); setEVB(b.budget.toString()); setEVS(b.spent.toString()); };
-const saveVar = () => { const u={…months}; const b=[…u[cm].variableBills]; b[eVar]={name:eVN,budget:parseFloat(eVB)||0,spent:parseFloat(eVS)||0}; u[cm]={…u[cm],variableBills:b}; save(u); setEVar(null); };
-const delVar = i => { const u={…months}; const b=[…u[cm].variableBills]; b.splice(i,1); u[cm]={…u[cm],variableBills:b}; save(u); setEVar(null); };
-const addNV = () => { if(!nVN)return; const u={…months}; u[cm]={…u[cm],variableBills:[…u[cm].variableBills,{name:nVN,budget:parseFloat(nVB)||0,spent:0}]}; save(u); setNVN(””); setNVB(””); setAVar(false); };
-const addTxn = () => { if(!txS||!txA)return; const u={…months}; const nt={store:txS,amt:parseFloat(txA)||0,note:txN,cat:txC||””}; const tx=[…u[cm].transactions,nt]; u[cm]={…u[cm],transactions:tx}; if(txC){const vb=[…u[cm].variableBills];const ci=vb.findIndex(b=>b.name===txC);if(ci>=0){vb[ci]={…vb[ci],spent:tx.filter(t=>t.cat===txC).reduce((s,t)=>s+t.amt,0)};u[cm]={…u[cm],variableBills:vb};}} save(u); setTxS(””); setTxA(””); setTxN(””); setTxC(””); setAddTx(false); };
-const openTx = i => { const t=data.transactions[i]; setETx(i); setETxS(t.store); setETxA(t.amt.toString()); setETxN(t.note||””); setETxC(t.cat||””); };
-const saveTx = () => { const u={…months}; const tx=[…u[cm].transactions]; const oc=tx[eTx].cat||””; tx[eTx]={…tx[eTx],store:eTxS,amt:parseFloat(eTxA)||0,note:eTxN,cat:eTxC||””}; u[cm]={…u[cm],transactions:tx}; [oc,eTxC].filter(Boolean).forEach(cat=>{const vb=[…u[cm].variableBills];const ci=vb.findIndex(b=>b.name===cat);if(ci>=0){vb[ci]={…vb[ci],spent:tx.filter(t=>t.cat===cat).reduce((s,t)=>s+t.amt,0)};u[cm]={…u[cm],variableBills:vb};}}); save(u); setETx(null); };
-const delTx = i => { const u={…months}; const tx=[…u[cm].transactions]; const oc=tx[i].cat||””; tx.splice(i,1); u[cm]={…u[cm],transactions:tx}; if(oc){const vb=[…u[cm].variableBills];const ci=vb.findIndex(b=>b.name===oc);if(ci>=0){vb[ci]={…vb[ci],spent:tx.filter(t=>t.cat===oc).reduce((s,t)=>s+t.amt,0)};u[cm]={…u[cm],variableBills:vb};}} save(u); setETx(null); };
-const togWish = i => { const u={…months}; const w=[…u[cm].wishList]; w[i]={…w[i],checked:!w[i].checked}; u[cm]={…u[cm],wishList:w}; save(u); };
-const saveAff = () => { const u={…months}; u[cm]={…u[cm],affirmations:tempAff.split(”\n”).filter(l=>l.trim())}; save(u); setEditAff(false); };
-const saveNotes = () => { const u={…months}; u[cm]={…u[cm],notes:tempNotes}; save(u); setEditNotes(false); };
-const mr = dAPR/100/12;
-const po = dLim - dBal;
-const pp = Math.max(0, Math.round((po/dLim)*100));
-const calcPayoff = p => { let b=dBal,m=0,ti=0; if(p<=b*mr)return{m:999,ti:99999}; while(b>0&&m<360){const int_=b*mr;ti+=int_;b=b+int_-p;if(b<0)b=0;m++;} return{m,ti:Math.round(ti*100)/100}; };
-const curPay = calcPayoff(dPay);
-const mi = Math.round(dBal*mr*100)/100;
-const pp2 = Math.round((dPay-mi)*100)/100;
-const pd = new Date(); pd.setMonth(pd.getMonth()+curPay.m);
-const ps = curPay.m<360 ? pd.toLocaleDateString(“en-US”,{month:“long”,year:“numeric”}) : “Never”;
-return (
-<div style={{minHeight:“100vh”,background:T.bg,color:T.tx,transition:“background 0.5s”,fontFamily:”‘Quicksand’,sans-serif”}}>
-{/* Header */}
-<div style={{background:T.hbg,padding:“28px 20px 20px”,textAlign:“center”,transition:“all 0.5s”}}>
-<div style={{fontSize:“14px”,letterSpacing:“8px”,opacity:0.4}}>{T.d}</div>
-<div style={{fontSize:“10px”,letterSpacing:“4px”,color:T.ht,fontWeight:600,opacity:0.6,textTransform:“uppercase”}}>{T.n} 2026</div>
-<div style={{fontSize:“36px”,fontWeight:700,color:T.ht+“30”,margin:“4px 0”}}>$$</div>
-{!editAff ? (
-<div onClick={() => {setEditAff(true);setTempAff(data.affirmations.join(”\n”));}} style={{cursor:“pointer”}}>
-{data.affirmations.map((a,i) => <div key={i} style={{fontSize:“19px”,fontFamily:”‘Playfair Display’,serif”,fontStyle:“italic”,color:T.ht,lineHeight:1.7}}>{a}</div>)}
-</div>
-) : (
-<div style={{display:“flex”,flexDirection:“column”,gap:“8px”}}>
-<textarea value={tempAff} onChange={e=>setTempAff(e.target.value)} rows={3} style={{width:“100%”,padding:“12px”,borderRadius:“14px”,border:`2px solid ${T.a}44`,background:“rgba(255,255,255,0.8)”,fontSize:“16px”,fontStyle:“italic”,fontFamily:”‘Playfair Display’,serif”,color:T.ad,resize:“none”,textAlign:“center”,boxSizing:“border-box”}} />
-<div style={{display:“flex”,gap:“8px”,justifyContent:“center”}}><Btn T={T} onClick={saveAff} label="save" primary /><Btn T={T} onClick={()=>setEditAff(false)} label=“cancel” /></div>
-</div>
-)}
-{!eDt ? (
-<div onClick={()=>{setEDt(true);setTDt(data.dates||””);}} style={{fontSize:“11px”,color:T.ht,opacity:0.5,marginTop:“8px”,cursor:“pointer”}}>{data.dates||“tap to set dates”}</div>
-) : (
-<div style={{display:“flex”,gap:“4px”,justifyContent:“center”,marginTop:“8px”}}>
-<input value={tDt} onChange={e=>setTDt(e.target.value)} placeholder=“e.g. 23dec-22jan” style={{padding:“5px 10px”,background:“rgba(255,255,255,0.6)”,border:`2px solid ${T.ht}44`,borderRadius:“12px”,fontSize:“12px”,color:T.ht,textAlign:“center”,width:“140px”}} />
-<button onClick={()=>{const u={…months};u[cm]={…u[cm],dates:tDt};save(u);setEDt(false);}} style={{padding:“4px 10px”,background:“rgba(255,255,255,0.5)”,borderRadius:“10px”,color:T.ht,fontSize:“10px”,fontWeight:600,border:“none”,cursor:“pointer”}}>{”\u2713”}</button>
-</div>
-)}
-</div>
-```
- {/* Notes banner */}
- {data.notes && !editNotes && (
-<div onClick={()=>{setEditNotes(true);setTempNotes(data.notes);}} style={{background:T.al+"66",padding:"8px 16px",textAlign:"center",cursor:"pointer",borderBottom:`1px solid ${T.br}`}}>
-<div style={{fontSize:"11px",color:T.ad,fontWeight:500}}>{"\uD83D\uDCCC"} {data.notes}</div>
-</div>
- )}
- {editNotes && (
-<div style={{background:T.al+"44",padding:"12px 16px",borderBottom:`1px solid ${T.br}`}}>
-<textarea value={tempNotes} onChange={e=>setTempNotes(e.target.value)} rows={2} style={{width:"100%",padding:"10px",borderRadius:"12px",border:`2px solid ${T.a}44`,background:"rgba(255,255,255,0.8)",fontSize:"12px",color:T.ad,resize:"none",boxSizing:"border-box",marginBottom:"6px",fontFamily:"inherit"}} />
-<div style={{display:"flex",gap:"8px",justifyContent:"center"}}>
-<Btn T={T} onClick={saveNotes} label="save" primary />
-<Btn T={T} onClick={()=>setEditNotes(false)} label="cancel" />
-<Btn T={T} onClick={()=>{const u={...months};u[cm]={...u[cm],notes:""};save(u);setEditNotes(false);}} label="clear" />
-</div>
-</div>
- )}
- {/* Month scroll */}
-<div style={{display:"flex",overflowX:"auto",padding:"10px 12px",gap:"5px",background:T.s,borderBottom:`1px solid ${T.br}`}}>
-   {MK.map(k => (
-<button key={k} onClick={()=>{setCm(k);setTab("home");setEditNotes(false);}} style={{padding:"7px 14px",flexShrink:0,borderRadius:"20px",fontSize:"11px",fontWeight:cm===k?700:500,background:cm===k?T.a:"transparent",color:cm===k?"#FFF":T.td,border:cm===k?"none":`1.5px solid ${T.br}`,transition:"all 0.3s",boxShadow:cm===k?`0 2px 8px ${T.a}44`:"none",fontFamily:"inherit",cursor:"pointer"}}>{k}</button>
-   ))}
-</div>
- {/* Tabs */}
-<div style={{display:"flex",background:T.s,borderBottom:`1px solid ${T.br}`,position:"sticky",top:0,zIndex:10}}>
-   {tabs_.map(t => (
-<button key={t.k} onClick={()=>setTab(t.k)} style={{flex:1,padding:"11px 2px",background:"none",border:"none",borderBottom:tab===t.k?`2.5px solid ${T.a}`:"2.5px solid transparent",color:tab===t.k?T.a:T.td,fontSize:"9px",fontWeight:tab===t.k?700:500,transition:"all 0.2s",fontFamily:"inherit",cursor:"pointer"}}>{t.i} {t.l}</button>
-   ))}
-</div>
- {/* Content */}
-<div style={{padding:"14px",maxWidth:"520px",margin:"0 auto"}}>
-   {tab==="home" && (
-<div className="fade" style={{display:"flex",flexDirection:"column",gap:"10px"}}>
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}}>
-<div onClick={()=>{if(!eInc){setEInc(true);setTInc(data.income.toString());}}} style={{...cs,textAlign:"center",cursor:"pointer"}}>
-<div style={{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}}>INCOME</div>
-           {eInc ? (<div><input value={tInc} onChange={e=>setTInc(e.target.value)} type="number" autoFocus style={{...is_,fontSize:"18px",fontWeight:700,textAlign:"center",color:T.a,border:`2px solid ${T.a}`}} /><div style={{display:"flex",gap:"4px",justifyContent:"center"}}><button onClick={()=>{const u={...months};u[cm]={...u[cm],income:parseFloat(tInc)||0};save(u);setEInc(false);}} style={{padding:"4px 12px",background:T.a,borderRadius:"12px",color:"white",fontSize:"10px",fontWeight:600,border:"none",cursor:"pointer"}}>{"\u2713"}</button><button onClick={()=>setEInc(false)} style={{padding:"4px 8px",border:`1px solid ${T.br}`,borderRadius:"12px",color:T.td,fontSize:"10px",background:"none",cursor:"pointer"}}>{"\u2715"}</button></div></div>) : (<div style={{fontSize:"20px",fontWeight:700,color:T.a}}>{fmt(data.income)}</div>)}
-</div>
-<div onClick={()=>{if(!eLS){setELS(true);setTLS(lms.toString());}}} style={{...cs,textAlign:"center",cursor:"pointer"}}>
-<div style={{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}}>LAST MO.</div>
-           {eLS ? (<div><input value={tLS} onChange={e=>setTLS(e.target.value)} type="number" autoFocus style={{...is_,fontSize:"18px",fontWeight:700,textAlign:"center",color:T.a,border:`2px solid ${T.a}`}} /><div style={{display:"flex",gap:"4px",justifyContent:"center"}}><button onClick={()=>{const u={...months};u[cm]={...u[cm],lastMonthSurplus:parseFloat(tLS)||0};save(u);setELS(false);}} style={{padding:"4px 12px",background:T.a,borderRadius:"12px",color:"white",fontSize:"10px",fontWeight:600,border:"none",cursor:"pointer"}}>{"\u2713"}</button><button onClick={()=>setELS(false)} style={{padding:"4px 8px",border:`1px solid ${T.br}`,borderRadius:"12px",color:T.td,fontSize:"10px",background:"none",cursor:"pointer"}}>{"\u2715"}</button></div></div>) : (<div style={{fontSize:"20px",fontWeight:700,color:T.a}}>{fmt(lms)}</div>)}
-</div>
-</div>
-<div style={{background:`linear-gradient(135deg,${T.al}88,${T.al}44)`,borderRadius:"16px",padding:"14px",textAlign:"center",border:`1px solid ${T.a}22`}}>
-<div style={{fontSize:"9px",color:T.ad,letterSpacing:"2px",fontWeight:600}}>TOTAL AVAILABLE</div>
-<div style={{fontSize:"24px",fontWeight:700,color:T.ad}}>{fmt(totA)}</div>
-</div>
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}}>
-<div style={{...cs,textAlign:"center"}}><div style={{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}}>SPENDINGS</div><div style={{fontSize:"18px",fontWeight:700,color:T.ad}}>{fmt(txT)}</div></div>
-<div style={{...cs,textAlign:"center"}}><div style={{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}}>N DA BANK RN</div><div style={{fontSize:"18px",fontWeight:700,color:ndb>=0?T.a:T.dn}}>{fmts(ndb)}</div></div>
-</div>
-<div style={{...cs,textAlign:"center"}}><div style={{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}}>SURPLUS</div><div style={{fontSize:"24px",fontWeight:700,color:sur>=0?T.a:T.dn}}>{fmts(sur)}</div></div>
-<div style={cs}>
-<div style={{display:"flex",justifyContent:"space-between",marginBottom:"6px"}}><span style={{fontSize:"10px",color:T.td,fontWeight:600}}>BILLS PAID</span><span style={{fontSize:"12px",color:T.a,fontWeight:700}}>{pdCt}/{blCt}</span></div>
-<div style={{height:"8px",background:T.al,borderRadius:"4px",overflow:"hidden"}}><div style={{height:"100%",width:pdP+"%",background:`linear-gradient(90deg,${T.a},${T.ad})`,borderRadius:"4px",transition:"width 0.5s"}} /></div>
-</div>
-</div>
-   )}
-   {tab==="fixed" && (
-<div className="fade">
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}}>
-<div><div style={{fontSize:"10px",letterSpacing:"2px",color:T.td,fontWeight:600}}>MONTHLY BILLS</div><div style={{fontSize:"11px",color:T.a,marginTop:"2px"}}>{fmt(fixPd)} paid {"\u00B7"} {fmt(fixPn)} pending</div></div>
-<Btn T={T} onClick={()=>setABill(true)} label="+ add" primary />
-</div>
-       {aBill && (<div style={{padding:"14px",marginBottom:"10px",background:T.c,borderRadius:"16px",border:`1px solid ${T.a}33`}}><input value={nBN} onChange={e=>setNBN(e.target.value)} placeholder="Bill name..." style={is_} /><input value={nBA} onChange={e=>setNBA(e.target.value)} placeholder="Amount..." type="number" style={is_} /><div style={{display:"flex",gap:"8px"}}><Btn T={T} onClick={addBillFn} label="add bill" primary /><Btn T={T} onClick={()=>setABill(false)} label="cancel" /></div></div>)}
-       {data.fixedBills.map((b, i) => {
-         const am = b.amount||0, ip = b.isPaid;
-         if (eBill === i) return (<div key={i} style={{padding:"12px",marginBottom:"4px",background:T.c,borderRadius:"14px",border:`1px solid ${T.a}33`}}><input value={eBN} onChange={e=>setEBN(e.target.value)} style={is_} /><div style={{fontSize:"9px",color:T.td,fontWeight:600,marginBottom:"2px"}}>AMOUNT</div><input value={eBA} onChange={e=>setEBA(e.target.value)} type="number" style={is_} /><div style={{display:"flex",gap:"6px"}}><Btn T={T} onClick={saveBill} label="save" primary /><Btn T={T} onClick={()=>setEBill(null)} label="cancel" /><Btn T={T} onClick={()=>delBill(i)} label="delete" danger /></div></div>);
-         return (<div key={i} style={{display:"flex",alignItems:"center",gap:"10px",padding:"10px 12px",marginBottom:"3px",background:ip?T.al+"44":T.s,borderRadius:"12px",border:`1px solid ${ip?T.a+"33":T.br}`,transition:"all 0.3s"}}><button onClick={()=>togBill(i)} style={{width:"24px",height:"24px",borderRadius:"8px",border:`2px solid ${ip?T.a:T.br}`,background:ip?T.a:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,padding:0,transition:"all 0.2s",cursor:"pointer"}}>{ip && <span style={{color:"white",fontSize:"13px"}}>{"\u2713"}</span>}</button><div style={{flex:1,cursor:"pointer"}} onClick={()=>openBill(i)}><div style={{fontSize:"13px",fontWeight:500,textDecoration:ip?"line-through":"none",opacity:ip?0.5:1}}>{b.name}</div></div><div style={{cursor:"pointer"}} onClick={()=>openBill(i)}><span style={{fontSize:"13px",fontWeight:700,color:ip?T.ad:T.a}}>{am>0?fmt(am):"\u2014"}</span></div></div>);
-       })}
-<div style={{marginTop:"10px",borderRadius:"14px",overflow:"hidden"}}>
-<div style={{display:"flex",justifyContent:"space-between",padding:"10px 14px",background:T.al+"66"}}><span style={{fontSize:"12px",fontWeight:600,color:T.ad}}>PAID</span><span style={{fontSize:"12px",fontWeight:700,color:T.ad}}>{fmt(fixPd)}</span></div>
-<div style={{display:"flex",justifyContent:"space-between",padding:"10px 14px",background:"#FFF8E8"}}><span style={{fontSize:"12px",fontWeight:600,color:"#A08840"}}>PENDING</span><span style={{fontSize:"12px",fontWeight:700,color:"#A08840"}}>{fmt(fixPn)}</span></div>
-<div style={{display:"flex",justifyContent:"space-between",padding:"12px 14px",background:T.hbg}}><span style={{fontWeight:700,color:T.ht}}>TOTAL</span><span style={{fontWeight:700,color:T.ht}}>{fmt(fixT)}</span></div>
-</div>
-</div>
-   )}
-   {tab==="flex" && (
-<div className="fade">
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}}><div style={{fontSize:"10px",letterSpacing:"2px",color:T.td,fontWeight:600}}>FLEX SPENDING</div><Btn T={T} onClick={()=>setAVar(true)} label="+ add" primary /></div>
-       {aVar && (<div style={{padding:"14px",marginBottom:"10px",background:T.c,borderRadius:"16px",border:`1px solid ${T.a}33`}}><input value={nVN} onChange={e=>setNVN(e.target.value)} placeholder="Category name..." style={is_} /><input value={nVB} onChange={e=>setNVB(e.target.value)} placeholder="Budget amount..." type="number" style={is_} /><div style={{display:"flex",gap:"8px"}}><Btn T={T} onClick={addNV} label="add category" primary /><Btn T={T} onClick={()=>setAVar(false)} label="cancel" /></div></div>)}
-       {data.variableBills.map((b, i) => {
-         const pct = b.budget>0 ? Math.min(100,(b.spent/b.budget)*100) : 0;
-         const ov = b.spent>b.budget && b.budget>0;
-         const rem = b.budget - b.spent;
-         if (eVar === i) return (<div key={i} style={{padding:"12px",marginBottom:"5px",background:T.c,borderRadius:"14px",border:`1px solid ${T.a}33`}}><input value={eVN} onChange={e=>setEVN(e.target.value)} style={is_} /><div style={{display:"flex",gap:"6px",marginBottom:"6px"}}><div style={{flex:1}}><div style={{fontSize:"9px",color:T.td,fontWeight:600}}>BUDGET</div><input value={eVB} onChange={e=>setEVB(e.target.value)} type="number" style={is_} /></div><div style={{flex:1}}><div style={{fontSize:"9px",color:T.td,fontWeight:600}}>SPENT</div><input value={eVS} onChange={e=>setEVS(e.target.value)} type="number" style={is_} /></div></div><div style={{display:"flex",gap:"6px"}}><Btn T={T} onClick={saveVar} label="save" primary /><Btn T={T} onClick={()=>setEVar(null)} label="cancel" /><Btn T={T} onClick={()=>delVar(i)} label="delete" danger /></div></div>);
-         return (<div key={i} onClick={()=>openVar(i)} style={{padding:"12px",marginBottom:"5px",background:T.s,borderRadius:"14px",border:`1px solid ${ov?T.dn+"44":T.br}`,cursor:"pointer"}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:"4px"}}><span style={{fontSize:"13px",fontWeight:500}}>{b.name}</span><span style={{fontSize:"11px",color:T.td}}>budget {fmt(b.budget)}</span></div>{b.budget > 0 && (<div><div style={{height:"5px",background:T.al,borderRadius:"3px",overflow:"hidden",marginBottom:"4px"}}><div style={{height:"100%",width:pct+"%",background:ov?T.dn:T.a,borderRadius:"3px",transition:"width 0.4s"}} /></div><div style={{display:"flex",justifyContent:"space-between",fontSize:"10px"}}><span style={{color:ov?T.dn:T.ad}}>spent {fmt(b.spent)}</span><span style={{color:rem>=0?T.a:T.dn}}>{rem>=0?fmt(rem)+" left":fmt(Math.abs(rem))+" over"}</span></div></div>)}</div>);
-       })}
-<div style={{marginTop:"10px",borderRadius:"14px",overflow:"hidden"}}><div style={{display:"flex",justifyContent:"space-between",padding:"10px 14px",background:T.al+"66"}}><span style={{fontSize:"12px",fontWeight:600,color:T.ad}}>SPENT</span><span style={{fontSize:"12px",fontWeight:700,color:T.ad}}>{fmt(varS)}</span></div><div style={{display:"flex",justifyContent:"space-between",padding:"12px 14px",background:T.hbg}}><span style={{fontWeight:700,color:T.ht}}>BUDGET</span><span style={{fontWeight:700,color:T.ht}}>{fmt(varT)}</span></div></div>
-</div>
-   )}
-   {tab==="spent" && (
-<div className="fade">
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}}><div style={{fontSize:"10px",letterSpacing:"2px",color:T.td,fontWeight:600}}>ALL SPENDINGS</div><Btn T={T} onClick={()=>setAddTx(true)} label="+ add" primary /></div>
-       {addTx && (<div style={{padding:"14px",marginBottom:"10px",background:T.c,borderRadius:"16px",border:`1px solid ${T.a}33`}}><input value={txS} onChange={e=>setTxS(e.target.value)} placeholder="Where..." style={is_} /><input value={txA} onChange={e=>setTxA(e.target.value)} placeholder="Amount..." type="number" style={is_} /><select value={txC} onChange={e=>setTxC(e.target.value)} style={{...is_,color:txC?T.tx:T.td}}><option value="">Category (optional)</option>{data.variableBills.map(b => <option key={b.name} value={b.name}>{b.name}</option>)}</select><input value={txN} onChange={e=>setTxN(e.target.value)} placeholder="Note (optional)..." style={is_} /><div style={{display:"flex",gap:"8px"}}><Btn T={T} onClick={addTxn} label="save" primary /><Btn T={T} onClick={()=>{setAddTx(false);setTxC("");}} label="cancel" /></div></div>)}
-       {data.transactions.map((tx, i) => {
-         if (eTx === i) return (<div key={i} style={{padding:"12px",marginBottom:"4px",background:T.c,borderRadius:"14px",border:`1px solid ${T.a}33`}}><input value={eTxS} onChange={e=>setETxS(e.target.value)} style={is_} /><input value={eTxA} onChange={e=>setETxA(e.target.value)} type="number" style={is_} /><select value={eTxC} onChange={e=>setETxC(e.target.value)} style={{...is_,color:eTxC?T.tx:T.td}}><option value="">No category</option>{data.variableBills.map(b => <option key={b.name} value={b.name}>{b.name}</option>)}</select><input value={eTxN} onChange={e=>setETxN(e.target.value)} placeholder="Note..." style={is_} /><div style={{display:"flex",gap:"6px"}}><Btn T={T} onClick={saveTx} label="save" primary /><Btn T={T} onClick={()=>setETx(null)} label="cancel" /><Btn T={T} onClick={()=>delTx(i)} label="delete" danger /></div></div>);
-         return (<div key={i} onClick={()=>openTx(i)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 12px",marginBottom:"3px",background:T.s,borderRadius:"12px",border:`1px solid ${T.br}`,cursor:"pointer"}}><div><span style={{fontSize:"13px",fontWeight:500}}>{tx.store}</span>{tx.cat && <span style={{fontSize:"9px",marginLeft:"6px",padding:"2px 6px",borderRadius:"8px",background:T.al,color:T.ad,fontWeight:600}}>{tx.cat}</span>}{tx.note && <div style={{fontSize:"10px",color:T.td,fontStyle:"italic"}}>{tx.note}</div>}</div><span style={{fontSize:"13px",fontWeight:700,color:T.ad,flexShrink:0,marginLeft:"8px"}}>{fmt(tx.amt)}</span></div>);
-       })}
-<div style={{display:"flex",justifyContent:"space-between",padding:"12px 14px",marginTop:"8px",background:T.hbg,borderRadius:"14px"}}><span style={{fontWeight:700,color:T.ht}}>TOTAL</span><span style={{fontWeight:700,color:T.ht}}>{fmt(txT)}</span></div>
-</div>
-   )}
-   {tab==="wish" && (
-<div className="fade">
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px"}}><div style={{fontSize:"16px",fontFamily:"'Playfair Display',serif",fontStyle:"italic",color:T.a}}>{"\u273F"} wish list {"\u273F"}</div><Btn T={T} onClick={()=>setAW(true)} label="+ add" primary /></div>
-       {aW && (<div style={{padding:"14px",marginBottom:"10px",background:T.c,borderRadius:"16px",border:`1px solid ${T.a}33`}}><input value={nWN} onChange={e=>setNWN(e.target.value)} placeholder="Item name..." style={is_} /><input value={nWP} onChange={e=>setNWP(e.target.value)} placeholder="Price (optional)..." type="number" style={is_} /><div style={{display:"flex",gap:"8px"}}><button onClick={()=>{if(!nWN)return;const u={...months};u[cm]={...u[cm],wishList:[...u[cm].wishList,{item:nWN,price:parseFloat(nWP)||null,checked:false}]};save(u);setNWN("");setNWP("");setAW(false);}} style={{flex:1,padding:"10px",background:T.a,borderRadius:"20px",color:"white",fontSize:"12px",fontWeight:600,border:"none",cursor:"pointer",fontFamily:"inherit"}}>add</button><Btn T={T} onClick={()=>setAW(false)} label="cancel" /></div></div>)}
-       {data.wishList.map((w, i) => {
-         if (eW === i) return (<div key={i} style={{padding:"12px",marginBottom:"4px",background:T.c,borderRadius:"14px",border:`1px solid ${T.a}33`}}><input value={eWN} onChange={e=>setEWN(e.target.value)} style={is_} /><input value={eWP} onChange={e=>setEWP(e.target.value)} type="number" placeholder="Price..." style={is_} /><div style={{display:"flex",gap:"6px"}}><button onClick={()=>{const u={...months};const wl=[...u[cm].wishList];wl[i]={...wl[i],item:eWN,price:parseFloat(eWP)||null};u[cm]={...u[cm],wishList:wl};save(u);setEW(null);}} style={{flex:1,padding:"8px",background:T.a,borderRadius:"16px",color:"white",fontSize:"11px",fontWeight:600,border:"none",cursor:"pointer",fontFamily:"inherit"}}>save</button><Btn T={T} onClick={()=>setEW(null)} label="cancel" /><Btn T={T} onClick={()=>{const u={...months};const wl=[...u[cm].wishList];wl.splice(i,1);u[cm]={...u[cm],wishList:wl};save(u);setEW(null);}} label="delete" danger /></div></div>);
-         return (<div key={i} style={{display:"flex",alignItems:"center",gap:"10px",padding:"10px 12px",marginBottom:"3px",background:w.checked?T.al+"44":T.s,borderRadius:"12px",border:`1px solid ${w.checked?T.a+"33":T.br}`}}><button onClick={()=>togWish(i)} style={{width:"22px",height:"22px",borderRadius:"50%",border:`2px solid ${w.checked?T.a:T.a+"55"}`,background:w.checked?T.a:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,padding:0,cursor:"pointer"}}>{w.checked && <span style={{color:"white",fontSize:"11px"}}>{"\u2713"}</span>}</button><span onClick={()=>{setEW(i);setEWN(w.item);setEWP(w.price?w.price.toString():"");}} style={{flex:1,fontSize:"13px",fontWeight:500,textDecoration:w.checked?"line-through":"none",opacity:w.checked?0.4:1,cursor:"pointer"}}>{w.item}</span>{w.price && <span style={{fontSize:"12px",color:T.a,fontWeight:600}}>{fmt(w.price)}</span>}</div>);
-       })}
-       {sur > 0 && (<div style={{marginTop:"14px",padding:"16px",background:T.al+"44",borderRadius:"16px",textAlign:"center"}}><div style={{fontSize:"10px",color:T.ad,fontWeight:600,letterSpacing:"1px"}}>SURPLUS</div><div style={{fontSize:"22px",fontWeight:700,color:T.ad,marginTop:"4px"}}>{fmt(sur)}</div></div>)}
-</div>
-   )}
-   {tab==="debt" && (
-<div className="fade" style={{display:"flex",flexDirection:"column",gap:"10px"}}>
-<div style={{textAlign:"center"}}><div style={{fontSize:"10px",letterSpacing:"2px",color:T.td,fontWeight:600}}>APPLE CARD PAYDOWN</div></div>
-<div style={{...cs,textAlign:"center"}}>
-<div style={{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}}>BALANCE</div>
-         {!eDbt ? (<div onClick={()=>setEDbt(true)} style={{cursor:"pointer"}}><div style={{fontSize:"28px",fontWeight:700,color:T.dn}}>{fmt(dBal)}</div><div style={{fontSize:"11px",color:T.td,marginTop:"4px"}}>of {fmt(dLim)} {"\u00B7"} {dAPR}% APR</div></div>) : (<div><input value={dBal} onChange={e=>setDBal(parseFloat(e.target.value)||0)} type="number" style={{...is_,fontSize:"20px",fontWeight:700,textAlign:"center",color:T.dn,border:`2px solid ${T.a}`}} /><div style={{display:"flex",gap:"6px"}}><div style={{flex:1}}><div style={{fontSize:"8px",color:T.td,fontWeight:600}}>APR%</div><input value={dAPR} onChange={e=>setDAPR(parseFloat(e.target.value)||0)} type="number" style={{...is_,textAlign:"center"}} /></div><div style={{flex:1}}><div style={{fontSize:"8px",color:T.td,fontWeight:600}}>LIMIT</div><input value={dLim} onChange={e=>setDLim(parseFloat(e.target.value)||0)} type="number" style={{...is_,textAlign:"center"}} /></div></div><Btn T={T} onClick={()=>{setEDbt(false);saveDebtState(dBal,dAPR,dPay,dLim);}} label="done" primary /></div>)}
-</div>
-<div style={cs}><div style={{display:"flex",justifyContent:"space-between",marginBottom:"6px"}}><span style={{fontSize:"10px",color:T.td,fontWeight:600}}>PAID OFF</span><span style={{fontSize:"10px",color:T.a,fontWeight:700}}>{fmt(po>0?po:0)} {"\u00B7"} {pp}%</span></div><div style={{height:"10px",background:T.al,borderRadius:"5px",overflow:"hidden"}}><div style={{height:"100%",width:pp+"%",background:`linear-gradient(90deg,${T.a},${T.ad})`,borderRadius:"5px",transition:"width 0.4s"}} /></div></div>
-<div style={cs}><div style={{fontSize:"10px",color:T.td,fontWeight:600,letterSpacing:"1px",marginBottom:"8px"}}>YOUR {fmt(dPay)} PAYMENT</div><div style={{display:"flex",gap:"8px",marginBottom:"8px"}}><div style={{flex:1,padding:"10px",background:T.dn+"15",borderRadius:"12px",textAlign:"center"}}><div style={{fontSize:"8px",color:T.dn,fontWeight:600}}>{"\u2192"} INTEREST</div><div style={{fontSize:"16px",fontWeight:700,color:T.dn}}>{fmt(mi)}</div></div><div style={{flex:1,padding:"10px",background:T.a+"15",borderRadius:"12px",textAlign:"center"}}><div style={{fontSize:"8px",color:T.a,fontWeight:600}}>{"\u2192"} BALANCE</div><div style={{fontSize:"16px",fontWeight:700,color:T.a}}>{fmt(pp2>0?pp2:0)}</div></div></div><div style={{fontSize:"11px",color:T.td,textAlign:"center",fontStyle:"italic"}}>{Math.round((mi/dPay)*100)}% goes to interest</div></div>
-<div style={{...cs,textAlign:"center"}}><div style={{fontSize:"10px",color:T.td,fontWeight:600,letterSpacing:"1px"}}>PROJECTED PAYOFF</div><div style={{fontSize:"20px",fontWeight:700,color:T.a}}>{ps}</div><div style={{fontSize:"11px",color:T.td,marginTop:"4px"}}>{curPay.m} months {"\u00B7"} {fmt(curPay.ti)} interest</div></div>
-<div style={cs}><div style={{fontSize:"10px",color:T.td,fontWeight:600,letterSpacing:"1px",marginBottom:"8px"}}>ADJUST PAYMENT</div><div style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"8px"}}><span style={{fontSize:"11px",color:T.td}}>$150</span><input type="range" min={150} max={500} step={25} value={dPay} onChange={e=>{const v=parseInt(e.target.value);setDPay(v);saveDebtState(dBal,dAPR,v,dLim);}} style={{flex:1,accentColor:T.a}} /><span style={{fontSize:"11px",color:T.td}}>$500</span></div><div style={{textAlign:"center",fontSize:"18px",fontWeight:700,color:T.a}}>{fmt(dPay)}/mo</div></div>
-</div>
-   )}
-</div>
-<div style={{textAlign:"center",padding:"24px 0 36px"}}><div style={{fontSize:"16px",opacity:0.25,letterSpacing:"6px"}}>{T.d}</div></div>
-</div>
-```
+}else{
+affSection=h(“div”,{style:{display:“flex”,flexDirection:“column”,gap:“8px”}},
+h(“textarea”,{value:tempAff,onChange:function(e){setTempAff(e.target.value);},rows:3,style:{width:“100%”,padding:“12px”,borderRadius:“14px”,border:“2px solid “+T.a+“44”,background:“rgba(255,255,255,0.8)”,fontSize:“16px”,fontStyle:“italic”,fontFamily:”‘Playfair Display’,serif”,color:T.ad,resize:“none”,textAlign:“center”,boxSizing:“border-box”}}),
+h(“div”,{style:{display:“flex”,gap:“8px”,justifyContent:“center”}},h(Btn,{T:T,onClick:saveAff,label:“save”,primary:true}),h(Btn,{T:T,onClick:function(){setEditAff(false);},label:“cancel”}))
 );
 }
-ReactDOM.render(<App />, document.getElementById(“app”));
-</script>
-</body>
-</html>
+var dateSection;
+if(!eDt){
+dateSection=h(“div”,{onClick:function(){setEDt(true);setTDt(data.dates||””);},style:{fontSize:“11px”,color:T.ht,opacity:0.5,marginTop:“8px”,cursor:“pointer”}},data.dates||“tap to set dates”);
+}else{
+dateSection=h(“div”,{style:{display:“flex”,gap:“4px”,justifyContent:“center”,marginTop:“8px”}},
+h(“input”,{value:tDt,onChange:function(e){setTDt(e.target.value);},placeholder:“e.g. 23dec-22jan”,style:{padding:“5px 10px”,background:“rgba(255,255,255,0.6)”,border:“2px solid “+T.ht+“44”,borderRadius:“12px”,fontSize:“12px”,color:T.ht,textAlign:“center”,width:“140px”}}),
+h(“button”,{onClick:function(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{dates:tDt});save(u);setEDt(false);},style:{padding:“4px 10px”,background:“rgba(255,255,255,0.5)”,borderRadius:“10px”,color:T.ht,fontSize:“10px”,fontWeight:600,border:“none”,cursor:“pointer”}},”\u2713”)
+);
+}
+return h(“div”,{style:{background:T.hbg,padding:“28px 20px 20px”,textAlign:“center”,transition:“all 0.5s”}},
+h(“div”,{style:{fontSize:“14px”,letterSpacing:“8px”,opacity:0.4}},T.d),
+h(“div”,{style:{fontSize:“10px”,letterSpacing:“4px”,color:T.ht,fontWeight:600,opacity:0.6,textTransform:“uppercase”}},T.n+” 2026”),
+h(“div”,{style:{fontSize:“36px”,fontWeight:700,color:T.ht+“30”,margin:“4px 0”}},”$$”),
+affSection,dateSection
+);
+}
+
+function renderNotes(){
+var els=[];
+if(data.notes&&!editNotes){
+els.push(h(“div”,{key:“nb”,onClick:function(){setEditNotes(true);setTempNotes(data.notes);},style:{background:T.al+“66”,padding:“8px 16px”,textAlign:“center”,cursor:“pointer”,borderBottom:“1px solid “+T.br}},
+h(“div”,{style:{fontSize:“11px”,color:T.ad,fontWeight:500}},”\uD83D\uDCCC “+data.notes)
+));
+}
+if(editNotes){
+els.push(h(“div”,{key:“ne”,style:{background:T.al+“44”,padding:“12px 16px”,borderBottom:“1px solid “+T.br}},
+h(“textarea”,{value:tempNotes,onChange:function(e){setTempNotes(e.target.value);},rows:2,style:{width:“100%”,padding:“10px”,borderRadius:“12px”,border:“2px solid “+T.a+“44”,background:“rgba(255,255,255,0.8)”,fontSize:“12px”,color:T.ad,resize:“none”,boxSizing:“border-box”,marginBottom:“6px”,fontFamily:“inherit”}}),
+h(“div”,{style:{display:“flex”,gap:“8px”,justifyContent:“center”}},
+h(Btn,{T:T,onClick:saveNotes,label:“save”,primary:true}),
+h(Btn,{T:T,onClick:function(){setEditNotes(false);},label:“cancel”}),
+h(Btn,{T:T,onClick:function(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{notes:””});save(u);setEditNotes(false);},label:“clear”})
+)
+));
+}
+return els;
+}
+
+function renderMonthScroll(){
+return h(“div”,{style:{display:“flex”,overflowX:“auto”,padding:“10px 12px”,gap:“5px”,background:T.s,borderBottom:“1px solid “+T.br}},
+MK.map(function(k){return h(“button”,{key:k,onClick:function(){setCm(k);setTab(“home”);setEditNotes(false);},style:{padding:“7px 14px”,flexShrink:0,borderRadius:“20px”,fontSize:“11px”,fontWeight:cm===k?700:500,background:cm===k?T.a:“transparent”,color:cm===k?”#FFF”:T.td,border:cm===k?“none”:“1.5px solid “+T.br,transition:“all 0.3s”,boxShadow:cm===k?“0 2px 8px “+T.a+“44”:“none”,fontFamily:“inherit”,cursor:“pointer”}},k);})
+);
+}
+
+function renderTabs(){
+return h(“div”,{style:{display:“flex”,background:T.s,borderBottom:“1px solid “+T.br,position:“sticky”,top:0,zIndex:10}},
+tabs_.map(function(t){return h(“button”,{key:t.k,onClick:function(){setTab(t.k);},style:{flex:1,padding:“11px 2px”,background:“none”,border:“none”,borderBottom:tab===t.k?“2.5px solid “+T.a:“2.5px solid transparent”,color:tab===t.k?T.a:T.td,fontSize:“9px”,fontWeight:tab===t.k?700:500,transition:“all 0.2s”,fontFamily:“inherit”,cursor:“pointer”}},t.i+” “+t.l);})
+);
+}
+
+function renderHome(){
+return h(“div”,{className:“fade”,style:{display:“flex”,flexDirection:“column”,gap:“10px”}},
+h(“div”,{style:{display:“grid”,gridTemplateColumns:“1fr 1fr”,gap:“8px”}},
+h(“div”,{onClick:function(){if(!eInc){setEInc(true);setTInc(data.income.toString());}},style:Object.assign({},cs,{textAlign:“center”,cursor:“pointer”})},
+h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“INCOME”),
+eInc?h(“div”,null,h(“input”,{value:tInc,onChange:function(e){setTInc(e.target.value);},type:“number”,autoFocus:true,style:Object.assign({},is_,{fontSize:“18px”,fontWeight:700,textAlign:“center”,color:T.a,border:“2px solid “+T.a})}),h(“div”,{style:{display:“flex”,gap:“4px”,justifyContent:“center”}},h(“button”,{onClick:function(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{income:parseFloat(tInc)||0});save(u);setEInc(false);},style:{padding:“4px 12px”,background:T.a,borderRadius:“12px”,color:“white”,fontSize:“10px”,fontWeight:600,border:“none”,cursor:“pointer”}},”\u2713”),h(“button”,{onClick:function(){setEInc(false);},style:{padding:“4px 8px”,border:“1px solid “+T.br,borderRadius:“12px”,color:T.td,fontSize:“10px”,background:“none”,cursor:“pointer”}},”\u2715”))):h(“div”,{style:{fontSize:“20px”,fontWeight:700,color:T.a}},fmt(data.income))
+),
+h(“div”,{onClick:function(){if(!eLS){setELS(true);setTLS(lms.toString());}},style:Object.assign({},cs,{textAlign:“center”,cursor:“pointer”})},
+h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“LAST MO.”),
+eLS?h(“div”,null,h(“input”,{value:tLS,onChange:function(e){setTLS(e.target.value);},type:“number”,autoFocus:true,style:Object.assign({},is_,{fontSize:“18px”,fontWeight:700,textAlign:“center”,color:T.a,border:“2px solid “+T.a})}),h(“div”,{style:{display:“flex”,gap:“4px”,justifyContent:“center”}},h(“button”,{onClick:function(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{lastMonthSurplus:parseFloat(tLS)||0});save(u);setELS(false);},style:{padding:“4px 12px”,background:T.a,borderRadius:“12px”,color:“white”,fontSize:“10px”,fontWeight:600,border:“none”,cursor:“pointer”}},”\u2713”),h(“button”,{onClick:function(){setELS(false);},style:{padding:“4px 8px”,border:“1px solid “+T.br,borderRadius:“12px”,color:T.td,fontSize:“10px”,background:“none”,cursor:“pointer”}},”\u2715”))):h(“div”,{style:{fontSize:“20px”,fontWeight:700,color:T.a}},fmt(lms))
+)
+),
+h(“div”,{style:{background:“linear-gradient(135deg,”+T.al+“88,”+T.al+“44)”,borderRadius:“16px”,padding:“14px”,textAlign:“center”,border:“1px solid “+T.a+“22”}},h(“div”,{style:{fontSize:“9px”,color:T.ad,letterSpacing:“2px”,fontWeight:600}},“TOTAL AVAILABLE”),h(“div”,{style:{fontSize:“24px”,fontWeight:700,color:T.ad}},fmt(totA))),
+h(“div”,{style:{display:“grid”,gridTemplateColumns:“1fr 1fr”,gap:“8px”}},
+h(“div”,{style:Object.assign({},cs,{textAlign:“center”})},h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“SPENDINGS”),h(“div”,{style:{fontSize:“18px”,fontWeight:700,color:T.ad}},fmt(txT))),
+h(“div”,{style:Object.assign({},cs,{textAlign:“center”})},h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“N DA BANK RN”),h(“div”,{style:{fontSize:“18px”,fontWeight:700,color:ndb>=0?T.a:T.dn}},fmts(ndb)))
+),
+h(“div”,{style:Object.assign({},cs,{textAlign:“center”})},h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“SURPLUS”),h(“div”,{style:{fontSize:“24px”,fontWeight:700,color:sur>=0?T.a:T.dn}},fmts(sur))),
+h(“div”,{style:cs},h(“div”,{style:{display:“flex”,justifyContent:“space-between”,marginBottom:“6px”}},h(“span”,{style:{fontSize:“10px”,color:T.td,fontWeight:600}},“BILLS PAID”),h(“span”,{style:{fontSize:“12px”,color:T.a,fontWeight:700}},pdCt+”/”+blCt)),h(“div”,{style:{height:“8px”,background:T.al,borderRadius:“4px”,overflow:“hidden”}},h(“div”,{style:{height:“100%”,width:pdP+”%”,background:“linear-gradient(90deg,”+T.a+”,”+T.ad+”)”,borderRadius:“4px”,transition:“width 0.5s”}})))
+);
+}
+
+function renderBills(){
+var items=data.fixedBills.map(function(b,i){
+var am=b.amount||0,ip=b.isPaid;
+if(eBill===i)return h(“div”,{key:i,style:{padding:“12px”,marginBottom:“4px”,background:T.c,borderRadius:“14px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:eBN,onChange:function(e){setEBN(e.target.value);},style:is_}),h(“div”,{style:{fontSize:“9px”,color:T.td,fontWeight:600,marginBottom:“2px”}},“AMOUNT”),h(“input”,{value:eBA,onChange:function(e){setEBA(e.target.value);},type:“number”,style:is_}),h(“div”,{style:{display:“flex”,gap:“6px”}},h(Btn,{T:T,onClick:saveBill,label:“save”,primary:true}),h(Btn,{T:T,onClick:function(){setEBill(null);},label:“cancel”}),h(Btn,{T:T,onClick:function(){delBill(i);},label:“delete”,danger:true})));
+return h(“div”,{key:i,style:{display:“flex”,alignItems:“center”,gap:“10px”,padding:“10px 12px”,marginBottom:“3px”,background:ip?T.al+“44”:T.s,borderRadius:“12px”,border:“1px solid “+(ip?T.a+“33”:T.br),transition:“all 0.3s”}},
+h(“button”,{onClick:function(){togBill(i);},style:{width:“24px”,height:“24px”,borderRadius:“8px”,border:“2px solid “+(ip?T.a:T.br),background:ip?T.a:“transparent”,display:“flex”,alignItems:“center”,justifyContent:“center”,flexShrink:0,padding:0,cursor:“pointer”}},ip?h(“span”,{style:{color:“white”,fontSize:“13px”}},”\u2713”):null),
+h(“div”,{style:{flex:1,cursor:“pointer”},onClick:function(){openBill(i);}},h(“div”,{style:{fontSize:“13px”,fontWeight:500,textDecoration:ip?“line-through”:“none”,opacity:ip?0.5:1}},b.name)),
+h(“div”,{style:{cursor:“pointer”},onClick:function(){openBill(i);}},h(“span”,{style:{fontSize:“13px”,fontWeight:700,color:ip?T.ad:T.a}},am>0?fmt(am):”\u2014”))
+);
+});
+return h(“div”,{className:“fade”},
+h(“div”,{style:{display:“flex”,justifyContent:“space-between”,alignItems:“center”,marginBottom:“10px”}},h(“div”,null,h(“div”,{style:{fontSize:“10px”,letterSpacing:“2px”,color:T.td,fontWeight:600}},“MONTHLY BILLS”),h(“div”,{style:{fontSize:“11px”,color:T.a,marginTop:“2px”}},fmt(fixPd)+” paid \u00B7 “+fmt(fixPn)+” pending”)),h(Btn,{T:T,onClick:function(){setABill(true);},label:”+ add”,primary:true})),
+aBill?h(“div”,{style:{padding:“14px”,marginBottom:“10px”,background:T.c,borderRadius:“16px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:nBN,onChange:function(e){setNBN(e.target.value);},placeholder:“Bill name…”,style:is_}),h(“input”,{value:nBA,onChange:function(e){setNBA(e.target.value);},placeholder:“Amount…”,type:“number”,style:is_}),h(“div”,{style:{display:“flex”,gap:“8px”}},h(Btn,{T:T,onClick:addBillFn,label:“add bill”,primary:true}),h(Btn,{T:T,onClick:function(){setABill(false);},label:“cancel”}))):null,
+items,
+h(“div”,{style:{marginTop:“10px”,borderRadius:“14px”,overflow:“hidden”}},
+h(“div”,{style:{display:“flex”,justifyContent:“space-between”,padding:“10px 14px”,background:T.al+“66”}},h(“span”,{style:{fontSize:“12px”,fontWeight:600,color:T.ad}},“PAID”),h(“span”,{style:{fontSize:“12px”,fontWeight:700,color:T.ad}},fmt(fixPd))),
+h(“div”,{style:{display:“flex”,justifyContent:“space-between”,padding:“10px 14px”,background:”#FFF8E8”}},h(“span”,{style:{fontSize:“12px”,fontWeight:600,color:”#A08840”}},“PENDING”),h(“span”,{style:{fontSize:“12px”,fontWeight:700,color:”#A08840”}},fmt(fixPn))),
+h(“div”,{style:{display:“flex”,justifyContent:“space-between”,padding:“12px 14px”,background:T.hbg}},h(“span”,{style:{fontWeight:700,color:T.ht}},“TOTAL”),h(“span”,{style:{fontWeight:700,color:T.ht}},fmt(fixT)))
+)
+);
+}
+
+function renderFlex(){
+var items=data.variableBills.map(function(b,i){
+var pct=b.budget>0?Math.min(100,(b.spent/b.budget)*100):0;var ov=b.spent>b.budget&&b.budget>0;var rem=b.budget-b.spent;
+if(eVar===i)return h(“div”,{key:i,style:{padding:“12px”,marginBottom:“5px”,background:T.c,borderRadius:“14px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:eVN,onChange:function(e){setEVN(e.target.value);},style:is_}),h(“div”,{style:{display:“flex”,gap:“6px”,marginBottom:“6px”}},h(“div”,{style:{flex:1}},h(“div”,{style:{fontSize:“9px”,color:T.td,fontWeight:600}},“BUDGET”),h(“input”,{value:eVB,onChange:function(e){setEVB(e.target.value);},type:“number”,style:is_})),h(“div”,{style:{flex:1}},h(“div”,{style:{fontSize:“9px”,color:T.td,fontWeight:600}},“SPENT”),h(“input”,{value:eVS,onChange:function(e){setEVS(e.target.value);},type:“number”,style:is_}))),h(“div”,{style:{display:“flex”,gap:“6px”}},h(Btn,{T:T,onClick:saveVar,label:“save”,primary:true}),h(Btn,{T:T,onClick:function(){setEVar(null);},label:“cancel”}),h(Btn,{T:T,onClick:function(){delVar(i);},label:“delete”,danger:true})));
+return h(“div”,{key:i,onClick:function(){openVar(i);},style:{padding:“12px”,marginBottom:“5px”,background:T.s,borderRadius:“14px”,border:“1px solid “+(ov?T.dn+“44”:T.br),cursor:“pointer”}},
+h(“div”,{style:{display:“flex”,justifyContent:“space-between”,marginBottom:“4px”}},h(“span”,{style:{fontSize:“13px”,fontWeight:500}},b.name),h(“span”,{style:{fontSize:“11px”,color:T.td}},“budget “+fmt(b.budget))),
+b.budget>0?h(“div”,null,h(“div”,{style:{height:“5px”,background:T.al,borderRadius:“3px”,overflow:“hidden”,marginBottom:“4px”}},h(“div”,{style:{height:“100%”,width:pct+”%”,background:ov?T.dn:T.a,borderRadius:“3px”,transition:“width 0.4s”}})),h(“div”,{style:{display:“flex”,justifyContent:“space-between”,fontSize:“10px”}},h(“span”,{style:{color:ov?T.dn:T.ad}},“spent “+fmt(b.spent)),h(“span”,{style:{color:rem>=0?T.a:T.dn}},rem>=0?fmt(rem)+” left”:fmt(Math.abs(rem))+” over”))):null
+);
+});
+return h(“div”,{className:“fade”},
+h(“div”,{style:{display:“flex”,justifyContent:“space-between”,alignItems:“center”,marginBottom:“10px”}},h(“div”,{style:{fontSize:“10px”,letterSpacing:“2px”,color:T.td,fontWeight:600}},“FLEX SPENDING”),h(Btn,{T:T,onClick:function(){setAVar(true);},label:”+ add”,primary:true})),
+aVar?h(“div”,{style:{padding:“14px”,marginBottom:“10px”,background:T.c,borderRadius:“16px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:nVN,onChange:function(e){setNVN(e.target.value);},placeholder:“Category name…”,style:is_}),h(“input”,{value:nVB,onChange:function(e){setNVB(e.target.value);},placeholder:“Budget amount…”,type:“number”,style:is_}),h(“div”,{style:{display:“flex”,gap:“8px”}},h(Btn,{T:T,onClick:addNV,label:“add category”,primary:true}),h(Btn,{T:T,onClick:function(){setAVar(false);},label:“cancel”}))):null,
+items,
+h(“div”,{style:{marginTop:“10px”,borderRadius:“14px”,overflow:“hidden”}},h(“div”,{style:{display:“flex”,justifyContent:“space-between”,padding:“10px 14px”,background:T.al+“66”}},h(“span”,{style:{fontSize:“12px”,fontWeight:600,color:T.ad}},“SPENT”),h(“span”,{style:{fontSize:“12px”,fontWeight:700,color:T.ad}},fmt(varS))),h(“div”,{style:{display:“flex”,justifyContent:“space-between”,padding:“12px 14px”,background:T.hbg}},h(“span”,{style:{fontWeight:700,color:T.ht}},“BUDGET”),h(“span”,{style:{fontWeight:700,color:T.ht}},fmt(varT))))
+);
+}
+
+function renderSpent(){
+var items=data.transactions.map(function(tx,i){
+if(eTx===i)return h(“div”,{key:i,style:{padding:“12px”,marginBottom:“4px”,background:T.c,borderRadius:“14px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:eTxS,onChange:function(e){setETxS(e.target.value);},style:is_}),h(“input”,{value:eTxA,onChange:function(e){setETxA(e.target.value);},type:“number”,style:is_}),h(“select”,{value:eTxC,onChange:function(e){setETxC(e.target.value);},style:Object.assign({},is_,{color:eTxC?T.tx:T.td})},h(“option”,{value:””},“No category”),data.variableBills.map(function(b){return h(“option”,{key:b.name,value:b.name},b.name);})),h(“input”,{value:eTxN,onChange:function(e){setETxN(e.target.value);},placeholder:“Note…”,style:is_}),h(“div”,{style:{display:“flex”,gap:“6px”}},h(Btn,{T:T,onClick:saveTx,label:“save”,primary:true}),h(Btn,{T:T,onClick:function(){setETx(null);},label:“cancel”}),h(Btn,{T:T,onClick:function(){delTx(i);},label:“delete”,danger:true})));
+return h(“div”,{key:i,onClick:function(){openTx(i);},style:{display:“flex”,justifyContent:“space-between”,alignItems:“center”,padding:“10px 12px”,marginBottom:“3px”,background:T.s,borderRadius:“12px”,border:“1px solid “+T.br,cursor:“pointer”}},
+h(“div”,null,h(“span”,{style:{fontSize:“13px”,fontWeight:500}},tx.store),tx.cat?h(“span”,{style:{fontSize:“9px”,marginLeft:“6px”,padding:“2px 6px”,borderRadius:“8px”,background:T.al,color:T.ad,fontWeight:600}},tx.cat):null,tx.note?h(“div”,{style:{fontSize:“10px”,color:T.td,fontStyle:“italic”}},tx.note):null),
+h(“span”,{style:{fontSize:“13px”,fontWeight:700,color:T.ad,flexShrink:0,marginLeft:“8px”}},fmt(tx.amt))
+);
+});
+return h(“div”,{className:“fade”},
+h(“div”,{style:{display:“flex”,justifyContent:“space-between”,alignItems:“center”,marginBottom:“10px”}},h(“div”,{style:{fontSize:“10px”,letterSpacing:“2px”,color:T.td,fontWeight:600}},“ALL SPENDINGS”),h(Btn,{T:T,onClick:function(){setAddTx(true);},label:”+ add”,primary:true})),
+addTx?h(“div”,{style:{padding:“14px”,marginBottom:“10px”,background:T.c,borderRadius:“16px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:txS,onChange:function(e){setTxS(e.target.value);},placeholder:“Where…”,style:is_}),h(“input”,{value:txA,onChange:function(e){setTxA(e.target.value);},placeholder:“Amount…”,type:“number”,style:is_}),h(“select”,{value:txC,onChange:function(e){setTxC(e.target.value);},style:Object.assign({},is_,{color:txC?T.tx:T.td})},h(“option”,{value:””},“Category (optional)”),data.variableBills.map(function(b){return h(“option”,{key:b.name,value:b.name},b.name);})),h(“input”,{value:txN,onChange:function(e){setTxN(e.target.value);},placeholder:“Note (optional)…”,style:is_}),h(“div”,{style:{display:“flex”,gap:“8px”}},h(Btn,{T:T,onClick:addTxn,label:“save”,primary:true}),h(Btn,{T:T,onClick:function(){setAddTx(false);setTxC(””);},label:“cancel”}))):null,
+items,
+h(“div”,{style:{display:“flex”,justifyContent:“space-between”,padding:“12px 14px”,marginTop:“8px”,background:T.hbg,borderRadius:“14px”}},h(“span”,{style:{fontWeight:700,color:T.ht}},“TOTAL”),h(“span”,{style:{fontWeight:700,color:T.ht}},fmt(txT)))
+);
+}
+
+function renderWish(){
+var items=data.wishList.map(function(w,i){
+if(eW===i)return h(“div”,{key:i,style:{padding:“12px”,marginBottom:“4px”,background:T.c,borderRadius:“14px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:eWN,onChange:function(e){setEWN(e.target.value);},style:is_}),h(“input”,{value:eWP,onChange:function(e){setEWP(e.target.value);},type:“number”,placeholder:“Price…”,style:is_}),h(“div”,{style:{display:“flex”,gap:“6px”}},h(“button”,{onClick:function(){var u=Object.assign({},months);var wl=data.wishList.slice();wl[i]=Object.assign({},wl[i],{item:eWN,price:parseFloat(eWP)||null});u[cm]=Object.assign({},u[cm],{wishList:wl});save(u);setEW(null);},style:{flex:1,padding:“8px”,background:T.a,borderRadius:“16px”,color:“white”,fontSize:“11px”,fontWeight:600,border:“none”,cursor:“pointer”,fontFamily:“inherit”}},“save”),h(Btn,{T:T,onClick:function(){setEW(null);},label:“cancel”}),h(Btn,{T:T,onClick:function(){var u=Object.assign({},months);var wl=data.wishList.slice();wl.splice(i,1);u[cm]=Object.assign({},u[cm],{wishList:wl});save(u);setEW(null);},label:“delete”,danger:true})));
+return h(“div”,{key:i,style:{display:“flex”,alignItems:“center”,gap:“10px”,padding:“10px 12px”,marginBottom:“3px”,background:w.checked?T.al+“44”:T.s,borderRadius:“12px”,border:“1px solid “+(w.checked?T.a+“33”:T.br)}},
+h(“button”,{onClick:function(){togWish(i);},style:{width:“22px”,height:“22px”,borderRadius:“50%”,border:“2px solid “+(w.checked?T.a:T.a+“55”),background:w.checked?T.a:“transparent”,display:“flex”,alignItems:“center”,justifyContent:“center”,flexShrink:0,padding:0,cursor:“pointer”}},w.checked?h(“span”,{style:{color:“white”,fontSize:“11px”}},”\u2713”):null),
+h(“span”,{onClick:function(){setEW(i);setEWN(w.item);setEWP(w.price?w.price.toString():””);},style:{flex:1,fontSize:“13px”,fontWeight:500,textDecoration:w.checked?“line-through”:“none”,opacity:w.checked?0.4:1,cursor:“pointer”}},w.item),
+w.price?h(“span”,{style:{fontSize:“12px”,color:T.a,fontWeight:600}},fmt(w.price)):null
+);
+});
+return h(“div”,{className:“fade”},
+h(“div”,{style:{display:“flex”,justifyContent:“space-between”,alignItems:“center”,marginBottom:“14px”}},h(“div”,{style:{fontSize:“16px”,fontFamily:”‘Playfair Display’,serif”,fontStyle:“italic”,color:T.a}},”\u273F wish list \u273F”),h(Btn,{T:T,onClick:function(){setAW(true);},label:”+ add”,primary:true})),
+aW?h(“div”,{style:{padding:“14px”,marginBottom:“10px”,background:T.c,borderRadius:“16px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:nWN,onChange:function(e){setNWN(e.target.value);},placeholder:“Item name…”,style:is_}),h(“input”,{value:nWP,onChange:function(e){setNWP(e.target.value);},placeholder:“Price (optional)…”,type:“number”,style:is_}),h(“div”,{style:{display:“flex”,gap:“8px”}},h(“button”,{onClick:function(){if(!nWN)return;var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{wishList:data.wishList.concat([{item:nWN,price:parseFloat(nWP)||null,checked:false}])});save(u);setNWN(””);setNWP(””);setAW(false);},style:{flex:1,padding:“10px”,background:T.a,borderRadius:“20px”,color:“white”,fontSize:“12px”,fontWeight:600,border:“none”,cursor:“pointer”,fontFamily:“inherit”}},“add”),h(Btn,{T:T,onClick:function(){setAW(false);},label:“cancel”}))):null,
+items,
+sur>0?h(“div”,{style:{marginTop:“14px”,padding:“16px”,background:T.al+“44”,borderRadius:“16px”,textAlign:“center”}},h(“div”,{style:{fontSize:“10px”,color:T.ad,fontWeight:600,letterSpacing:“1px”}},“SURPLUS”),h(“div”,{style:{fontSize:“22px”,fontWeight:700,color:T.ad,marginTop:“4px”}},fmt(sur))):null
+);
+}
+
+function renderDebt(){
+return h(“div”,{className:“fade”,style:{display:“flex”,flexDirection:“column”,gap:“10px”}},
+h(“div”,{style:{textAlign:“center”}},h(“div”,{style:{fontSize:“10px”,letterSpacing:“2px”,color:T.td,fontWeight:600}},“APPLE CARD PAYDOWN”)),
+h(“div”,{style:Object.assign({},cs,{textAlign:“center”})},h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“BALANCE”),
+!eDbt?h(“div”,{onClick:function(){setEDbt(true);},style:{cursor:“pointer”}},h(“div”,{style:{fontSize:“28px”,fontWeight:700,color:T.dn}},fmt(dBal)),h(“div”,{style:{fontSize:“11px”,color:T.td,marginTop:“4px”}},“of “+fmt(dLim)+” \u00B7 “+dAPR+”% APR”)):
+h(“div”,null,h(“input”,{value:dBal,onChange:function(e){setDBal(parseFloat(e.target.value)||0);},type:“number”,style:Object.assign({},is_,{fontSize:“20px”,fontWeight:700,textAlign:“center”,color:T.dn,border:“2px solid “+T.a})}),h(“div”,{style:{display:“flex”,gap:“6px”}},h(“div”,{style:{flex:1}},h(“div”,{style:{fontSize:“8px”,color:T.td,fontWeight:600}},“APR%”),h(“input”,{value:dAPR,onChange:function(e){setDAPR(parseFloat(e.target.value)||0);},type:“number”,style:Object.assign({},is_,{textAlign:“center”})})),h(“div”,{style:{flex:1}},h(“div”,{style:{fontSize:“8px”,color:T.td,fontWeight:600}},“LIMIT”),h(“input”,{value:dLim,onChange:function(e){setDLim(parseFloat(e.target.value)||0);},type:“number”,style:Object.assign({},is_,{textAlign:“center”})}))),h(Btn,{T:T,onClick:function(){setEDbt(false);saveDbt(dBal,dAPR,dPay,dLim);},label:“done”,primary:true}))
+),
+h(“div”,{style:cs},h(“div”,{style:{display:“flex”,justifyContent:“space-between”,marginBottom:“6px”}},h(“span”,{style:{fontSize:“10px”,color:T.td,fontWeight:600}},“PAID OFF”),h(“span”,{style:{fontSize:“10px”,color:T.a,fontWeight:700}},fmt(po>0?po:0)+” \u00B7 “+pp+”%”)),h(“div”,{style:{height:“10px”,background:T.al,borderRadius:“5px”,overflow:“hidden”}},h(“div”,{style:{height:“100%”,width:pp+”%”,background:“linear-gradient(90deg,”+T.a+”,”+T.ad+”)”,borderRadius:“5px”,transition:“width 0.4s”}}))),
+h(“div”,{style:cs},h(“div”,{style:{fontSize:“10px”,color:T.td,fontWeight:600,letterSpacing:“1px”,marginBottom:“8px”}},“YOUR “+fmt(dPay)+” PAYMENT”),h(“div”,{style:{display:“flex”,gap:“8px”,marginBottom:“8px”}},h(“div”,{style:{flex:1,padding:“10px”,background:T.dn+“15”,borderRadius:“12px”,textAlign:“center”}},h(“div”,{style:{fontSize:“8px”,color:T.dn,fontWeight:600}},”\u2192 INTEREST”),h(“div”,{style:{fontSize:“16px”,fontWeight:700,color:T.dn}},fmt(mi))),h(“div”,{style:{flex:1,padding:“10px”,background:T.a+“15”,borderRadius:“12px”,textAlign:“center”}},h(“div”,{style:{fontSize:“8px”,color:T.a,fontWeight:600}},”\u2192 BALANCE”),h(“div”,{style:{fontSize:“16px”,fontWeight:700,color:T.a}},fmt(pp2>0?pp2:0)))),h(“div”,{style:{fontSize:“11px”,color:T.td,textAlign:“center”,fontStyle:“italic”}},Math.round((mi/dPay)*100)+”% goes to interest”)),
+h(“div”,{style:Object.assign({},cs,{textAlign:“center”})},h(“div”,{style:{fontSize:“10px”,color:T.td,fontWeight:600,letterSpacing:“1px”}},“PROJECTED PAYOFF”),h(“div”,{style:{fontSize:“20px”,fontWeight:700,color:T.a}},ps),h(“div”,{style:{fontSize:“11px”,color:T.td,marginTop:“4px”}},curPay.m+” months \u00B7 “+fmt(curPay.ti)+” interest”)),
+h(“div”,{style:cs},h(“div”,{style:{fontSize:“10px”,color:T.td,fontWeight:600,letterSpacing:“1px”,marginBottom:“8px”}},“ADJUST PAYMENT”),h(“div”,{style:{display:“flex”,alignItems:“center”,gap:“10px”,marginBottom:“8px”}},h(“span”,{style:{fontSize:“11px”,color:T.td}},”$150”),h(“input”,{type:“range”,min:150,max:500,step:25,value:dPay,onChange:function(e){var v=parseInt(e.target.value);setDPay(v);saveDbt(dBal,dAPR,v,dLim);},style:{flex:1,accentColor:T.a}}),h(“span”,{style:{fontSize:“11px”,color:T.td}},”$500”)),h(“div”,{style:{textAlign:“center”,fontSize:“18px”,fontWeight:700,color:T.a}},fmt(dPay)+”/mo”))
+);
+}
+
+var content=null;
+if(tab==="home")content=renderHome();
+if(tab==="fixed")content=renderBills();
+if(tab==="flex")content=renderFlex();
+if(tab==="spent")content=renderSpent();
+if(tab==="wish")content=renderWish();
+if(tab==="debt")content=renderDebt();
+
+return h("div",{style:{minHeight:"100vh",background:T.bg,color:T.tx,transition:"background 0.5s",fontFamily:"'Quicksand',sans-serif"}},
+renderHeader(),
+renderNotes(),
+renderMonthScroll(),
+renderTabs(),
+h("div",{style:{padding:"14px",maxWidth:"520px",margin:"0 auto"}},content),
+h("div",{style:{textAlign:"center",padding:"24px 0 36px"}},h("div",{style:{fontSize:"16px",opacity:0.25,letterSpacing:"6px"}},T.d))
+);
+}
+
+ReactDOM.render(h(App),document.getElementById("app"));
+</script></body></html>
