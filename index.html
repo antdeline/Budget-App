@@ -241,57 +241,57 @@ return els;
 }
 
 function renderMonthScroll(){
-return h("div",{style:{display:"flex",overflowX:"auto",padding:"10px 12px",gap:"5px",background:T.s,borderBottom:"1px solid “+T.br}},
-MK.map(function(k){return h("button",{key:k,onClick:function(){setCm(k);setTab("home");setEditNotes(false);},style:{padding:“7px 14px”,flexShrink:0,borderRadius:“20px”,fontSize:“11px”,fontWeight:cm===k?700:500,background:cm===k?T.a:“transparent”,color:cm===k?”#FFF”:T.td,border:cm===k?“none”:“1.5px solid “+T.br,transition:“all 0.3s”,boxShadow:cm===k?“0 2px 8px “+T.a+“44”:“none”,fontFamily:“inherit”,cursor:“pointer”}},k);})
+return h("div",{style:{display:"flex",overflowX:"auto",padding:"10px 12px",gap:"5px",background:T.s,borderBottom:"1px solid "+T.br}},
+MK.map(function(k){return h("button",{key:k,onClick:function(){setCm(k);setTab("home");setEditNotes(false);},style:{padding:"7px 14px",flexShrink:0,borderRadius:"20px",fontSize:"11px",fontWeight:cm===k?700:500,background:cm===k?T.a:"transparent",color:cm===k?"#FFF":T.td,border:cm===k?"none":"1.5px solid "+T.br,transition:"all 0.3s",boxShadow:cm===k?"0 2px 8px "+T.a+"44":"none",fontFamily:"inherit",cursor:"pointer"}},k);})
 );
 }
 
 function renderTabs(){
-return h(“div”,{style:{display:“flex”,background:T.s,borderBottom:“1px solid “+T.br,position:“sticky”,top:0,zIndex:10}},
-tabs_.map(function(t){return h(“button”,{key:t.k,onClick:function(){setTab(t.k);},style:{flex:1,padding:“11px 2px”,background:“none”,border:“none”,borderBottom:tab===t.k?“2.5px solid “+T.a:“2.5px solid transparent”,color:tab===t.k?T.a:T.td,fontSize:“9px”,fontWeight:tab===t.k?700:500,transition:“all 0.2s”,fontFamily:“inherit”,cursor:“pointer”}},t.i+” “+t.l);})
+return h("div",{style:{display:"flex",background:T.s,borderBottom:"1px solid "+T.br,position:"sticky",top:0,zIndex:10}},
+tabs_.map(function(t){return h("button",{key:t.k,onClick:function(){setTab(t.k);},style:{flex:1,padding:"11px 2px",background:"none",border:"none",borderBottom:tab===t.k?"2.5px solid "+T.a:"2.5px solid transparent",color:tab===t.k?T.a:T.td,fontSize:"9px",fontWeight:tab===t.k?700:500,transition:"all 0.2s",fontFamily:"inherit",cursor:"pointer"}},t.i+" "+t.l);})
 );
 }
 
 function renderHome(){
-return h(“div”,{className:“fade”,style:{display:“flex”,flexDirection:“column”,gap:“10px”}},
-h(“div”,{style:{display:“grid”,gridTemplateColumns:“1fr 1fr”,gap:“8px”}},
-h(“div”,{onClick:function(){if(!eInc){setEInc(true);setTInc(data.income.toString());}},style:Object.assign({},cs,{textAlign:“center”,cursor:“pointer”})},
-h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“INCOME”),
-eInc?h(“div”,null,h(“input”,{value:tInc,onChange:function(e){setTInc(e.target.value);},type:“number”,autoFocus:true,style:Object.assign({},is_,{fontSize:“18px”,fontWeight:700,textAlign:“center”,color:T.a,border:“2px solid “+T.a})}),h(“div”,{style:{display:“flex”,gap:“4px”,justifyContent:“center”}},h(“button”,{onClick:function(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{income:parseFloat(tInc)||0});save(u);setEInc(false);},style:{padding:“4px 12px”,background:T.a,borderRadius:“12px”,color:“white”,fontSize:“10px”,fontWeight:600,border:“none”,cursor:“pointer”}},”\u2713”),h(“button”,{onClick:function(){setEInc(false);},style:{padding:“4px 8px”,border:“1px solid “+T.br,borderRadius:“12px”,color:T.td,fontSize:“10px”,background:“none”,cursor:“pointer”}},”\u2715”))):h(“div”,{style:{fontSize:“20px”,fontWeight:700,color:T.a}},fmt(data.income))
+return h("div",{className:"fade",style:{display:"flex",flexDirection:"column",gap:"10px"}},
+h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}},
+h("div",{onClick:function(){if(!eInc){setEInc(true);setTInc(data.income.toString());}},style:Object.assign({},cs,{textAlign:"center",cursor:"pointer"})},
+h("div",{style:{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}},"INCOME"),
+eInc?h("div",null,h("input",{value:tInc,onChange:function(e){setTInc(e.target.value);},type:"number",autoFocus:true,style:Object.assign({},is_,{fontSize:"18px",fontWeight:700,textAlign:"center",color:T.a,border:"2px solid "+T.a})}),h("div",{style:{display:"flex",gap:"4px",justifyContent:"center"}},h("button",{onClick:function(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{income:parseFloat(tInc)||0});save(u);setEInc(false);},style:{padding:"4px 12px",background:T.a,borderRadius:"12px",color:"white",fontSize:"10px",fontWeight:600,border:"none",cursor:"pointer"}},"\u2713"),h("button",{onClick:function(){setEInc(false);},style:{padding:"4px 8px",border:"1px solid "+T.br,borderRadius:"12px",color:T.td,fontSize:"10px",background:"none",cursor:"pointer"}},"\u2715"))):h("div",{style:{fontSize:"20px",fontWeight:700,color:T.a}},fmt(data.income))
 ),
-h(“div”,{onClick:function(){if(!eLS){setELS(true);setTLS(lms.toString());}},style:Object.assign({},cs,{textAlign:“center”,cursor:“pointer”})},
-h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“LAST MO.”),
-eLS?h(“div”,null,h(“input”,{value:tLS,onChange:function(e){setTLS(e.target.value);},type:“number”,autoFocus:true,style:Object.assign({},is_,{fontSize:“18px”,fontWeight:700,textAlign:“center”,color:T.a,border:“2px solid “+T.a})}),h(“div”,{style:{display:“flex”,gap:“4px”,justifyContent:“center”}},h(“button”,{onClick:function(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{lastMonthSurplus:parseFloat(tLS)||0});save(u);setELS(false);},style:{padding:“4px 12px”,background:T.a,borderRadius:“12px”,color:“white”,fontSize:“10px”,fontWeight:600,border:“none”,cursor:“pointer”}},”\u2713”),h(“button”,{onClick:function(){setELS(false);},style:{padding:“4px 8px”,border:“1px solid “+T.br,borderRadius:“12px”,color:T.td,fontSize:“10px”,background:“none”,cursor:“pointer”}},”\u2715”))):h(“div”,{style:{fontSize:“20px”,fontWeight:700,color:T.a}},fmt(lms))
+h("div",{onClick:function(){if(!eLS){setELS(true);setTLS(lms.toString());}},style:Object.assign({},cs,{textAlign:"center",cursor:"pointer"})},
+h("div",{style:{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}},"LAST MO."),
+eLS?h("div",null,h("input",{value:tLS,onChange:function(e){setTLS(e.target.value);},type:"number",autoFocus:true,style:Object.assign({},is_,{fontSize:"18px",fontWeight:700,textAlign:"center",color:T.a,border:"2px solid "+T.a})}),h("div",{style:{display:"flex",gap:"4px",justifyContent:"center"}},h("button",{onClick:function(){var u=Object.assign({},months);u[cm]=Object.assign({},u[cm],{lastMonthSurplus:parseFloat(tLS)||0});save(u);setELS(false);},style:{padding:"4px 12px",background:T.a,borderRadius:"12px",color:"white",fontSize:"10px",fontWeight:600,border:"none",cursor:"pointer"}},"\u2713"),h("button",{onClick:function(){setELS(false);},style:{padding:"4px 8px",border:"1px solid "+T.br,borderRadius:"12px",color:T.td,fontSize:"10px",background:"none",cursor:"pointer"}},"\u2715"))):h("div",{style:{fontSize:"20px",fontWeight:700,color:T.a}},fmt(lms))
 )
 ),
-h(“div”,{style:{background:“linear-gradient(135deg,”+T.al+“88,”+T.al+“44)”,borderRadius:“16px”,padding:“14px”,textAlign:“center”,border:“1px solid “+T.a+“22”}},h(“div”,{style:{fontSize:“9px”,color:T.ad,letterSpacing:“2px”,fontWeight:600}},“TOTAL AVAILABLE”),h(“div”,{style:{fontSize:“24px”,fontWeight:700,color:T.ad}},fmt(totA))),
-h(“div”,{style:{display:“grid”,gridTemplateColumns:“1fr 1fr”,gap:“8px”}},
-h(“div”,{style:Object.assign({},cs,{textAlign:“center”})},h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“SPENDINGS”),h(“div”,{style:{fontSize:“18px”,fontWeight:700,color:T.ad}},fmt(txT))),
-h(“div”,{style:Object.assign({},cs,{textAlign:“center”})},h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“N DA BANK RN”),h(“div”,{style:{fontSize:“18px”,fontWeight:700,color:ndb>=0?T.a:T.dn}},fmts(ndb)))
+h("div",{style:{background:"linear-gradient(135deg,"+T.al+"88,"+T.al+"44)",borderRadius:"16px",padding:"14px",textAlign:"center",border:"1px solid "+T.a+"22"}},h("div",{style:{fontSize:"9px",color:T.ad,letterSpacing:"2px",fontWeight:600}},"TOTAL AVAILABLE"),h("div",{style:{fontSize:"24px",fontWeight:700,color:T.ad}},fmt(totA))),
+h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}},
+h("div",{style:Object.assign({},cs,{textAlign:"center"})},h("div",{style:{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}},"SPENDINGS"),h("div",{style:{fontSize:"18px",fontWeight:700,color:T.ad}},fmt(txT))),
+h("div",{style:Object.assign({},cs,{textAlign:"center"})},h("div",{style:{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}},"N DA BANK RN"),h("div",{style:{fontSize:"18px",fontWeight:700,color:ndb>=0?T.a:T.dn}},fmts(ndb)))
 ),
-h(“div”,{style:Object.assign({},cs,{textAlign:“center”})},h(“div”,{style:{fontSize:“9px”,color:T.td,letterSpacing:“2px”,fontWeight:600}},“SURPLUS”),h(“div”,{style:{fontSize:“24px”,fontWeight:700,color:sur>=0?T.a:T.dn}},fmts(sur))),
-h(“div”,{style:cs},h(“div”,{style:{display:“flex”,justifyContent:“space-between”,marginBottom:“6px”}},h(“span”,{style:{fontSize:“10px”,color:T.td,fontWeight:600}},“BILLS PAID”),h(“span”,{style:{fontSize:“12px”,color:T.a,fontWeight:700}},pdCt+”/”+blCt)),h(“div”,{style:{height:“8px”,background:T.al,borderRadius:“4px”,overflow:“hidden”}},h(“div”,{style:{height:“100%”,width:pdP+”%”,background:“linear-gradient(90deg,”+T.a+”,”+T.ad+”)”,borderRadius:“4px”,transition:“width 0.5s”}})))
+h("div",{style:Object.assign({},cs,{textAlign:"center"})},h("div",{style:{fontSize:"9px",color:T.td,letterSpacing:"2px",fontWeight:600}},"SURPLUS"),h("div",{style:{fontSize:"24px",fontWeight:700,color:sur>=0?T.a:T.dn}},fmts(sur))),
+h("div",{style:cs},h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:"6px"}},h("span",{style:{fontSize:"10px",color:T.td,fontWeight:600}},"BILLS PAID"),h("span",{style:{fontSize:"12px",color:T.a,fontWeight:700}},pdCt+"/"+blCt)),h("div",{style:{height:"8px",background:T.al,borderRadius:"4px",overflow:"hidden"}},h("div",{style:{height:"100%",width:pdP+"%",background:"linear-gradient(90deg,"+T.a+","+T.ad+")",borderRadius:"4px",transition:"width 0.5s"}})))
 );
 }
 
 function renderBills(){
 var items=data.fixedBills.map(function(b,i){
 var am=b.amount||0,ip=b.isPaid;
-if(eBill===i)return h(“div”,{key:i,style:{padding:“12px”,marginBottom:“4px”,background:T.c,borderRadius:“14px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:eBN,onChange:function(e){setEBN(e.target.value);},style:is_}),h(“div”,{style:{fontSize:“9px”,color:T.td,fontWeight:600,marginBottom:“2px”}},“AMOUNT”),h(“input”,{value:eBA,onChange:function(e){setEBA(e.target.value);},type:“number”,style:is_}),h(“div”,{style:{display:“flex”,gap:“6px”}},h(Btn,{T:T,onClick:saveBill,label:“save”,primary:true}),h(Btn,{T:T,onClick:function(){setEBill(null);},label:“cancel”}),h(Btn,{T:T,onClick:function(){delBill(i);},label:“delete”,danger:true})));
-return h(“div”,{key:i,style:{display:“flex”,alignItems:“center”,gap:“10px”,padding:“10px 12px”,marginBottom:“3px”,background:ip?T.al+“44”:T.s,borderRadius:“12px”,border:“1px solid “+(ip?T.a+“33”:T.br),transition:“all 0.3s”}},
-h(“button”,{onClick:function(){togBill(i);},style:{width:“24px”,height:“24px”,borderRadius:“8px”,border:“2px solid “+(ip?T.a:T.br),background:ip?T.a:“transparent”,display:“flex”,alignItems:“center”,justifyContent:“center”,flexShrink:0,padding:0,cursor:“pointer”}},ip?h(“span”,{style:{color:“white”,fontSize:“13px”}},”\u2713”):null),
-h(“div”,{style:{flex:1,cursor:“pointer”},onClick:function(){openBill(i);}},h(“div”,{style:{fontSize:“13px”,fontWeight:500,textDecoration:ip?“line-through”:“none”,opacity:ip?0.5:1}},b.name)),
-h(“div”,{style:{cursor:“pointer”},onClick:function(){openBill(i);}},h(“span”,{style:{fontSize:“13px”,fontWeight:700,color:ip?T.ad:T.a}},am>0?fmt(am):”\u2014”))
+if(eBill===i)return h("div",{key:i,style:{padding:"12px",marginBottom:"4px",background:T.c,borderRadius:"14px",border:"1px solid "+T.a+"33"}},h("input",{value:eBN,onChange:function(e){setEBN(e.target.value);},style:is_}),h(div",{style:{fontSize:"9px",color:T.td,fontWeight:600,marginBottom:"2px"}},"AMOUNT"),h("input",{value:eBA,onChange:function(e){setEBA(e.target.value);},type:"number",style:is_}),h("div",{style:{display:"flex",gap:"6px"}},h(Btn,{T:T,onClick:saveBill,label:"save",primary:true}),h(Btn,{T:T,onClick:function(){setEBill(null);},label:"cancel"}),h(Btn,{T:T,onClick:function(){delBill(i);},label:"delete",danger:true})));
+return h("div",{key:i,style:{display:"flex",alignItems:"center",gap:"10px",padding:"10px 12px",marginBottom:"3px",background:ip?T.al+"44":T.s,borderRadius:"12px",border:"1px solid "+(ip?T.a+"33":T.br),transition:"all 0.3s"}},
+h("button",{onClick:function(){togBill(i);},style:{width:"24px",height:"24px",borderRadius:"8px",border:"2px solid "+(ip?T.a:T.br),background:ip?T.a:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,padding:0,cursor:"pointer"}},ip?h("span",{style:{color:"white",fontSize:"13px"}},"\u2713"):null),
+h("div",{style:{flex:1,cursor:"pointer"},onClick:function(){openBill(i);}},h("div",{style:{fontSize:"13px",fontWeight:500,textDecoration:ip?"line-through":"none",opacity:ip?0.5:1}},b.name)),
+h("div",{style:{cursor:"pointer"},onClick:function(){openBill(i);}},h("span",{style:{fontSize:"13px",fontWeight:700,color:ip?T.ad:T.a}},am>0?fmt(am):"\u2014"))
 );
 });
-return h(“div”,{className:“fade”},
-h(“div”,{style:{display:“flex”,justifyContent:“space-between”,alignItems:“center”,marginBottom:“10px”}},h(“div”,null,h(“div”,{style:{fontSize:“10px”,letterSpacing:“2px”,color:T.td,fontWeight:600}},“MONTHLY BILLS”),h(“div”,{style:{fontSize:“11px”,color:T.a,marginTop:“2px”}},fmt(fixPd)+” paid \u00B7 “+fmt(fixPn)+” pending”)),h(Btn,{T:T,onClick:function(){setABill(true);},label:”+ add”,primary:true})),
-aBill?h(“div”,{style:{padding:“14px”,marginBottom:“10px”,background:T.c,borderRadius:“16px”,border:“1px solid “+T.a+“33”}},h(“input”,{value:nBN,onChange:function(e){setNBN(e.target.value);},placeholder:“Bill name…”,style:is_}),h(“input”,{value:nBA,onChange:function(e){setNBA(e.target.value);},placeholder:“Amount…”,type:“number”,style:is_}),h(“div”,{style:{display:“flex”,gap:“8px”}},h(Btn,{T:T,onClick:addBillFn,label:“add bill”,primary:true}),h(Btn,{T:T,onClick:function(){setABill(false);},label:“cancel”}))):null,
+return h("div",{className:"fade"},
+h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}},h("div",null,h("div",{style:{fontSize:"10px",letterSpacing:"2px",color:T.td,fontWeight:600}},"MONTHLY BILLS"),h("div",{style:{fontSize:"11px",color:T.a,marginTop:"2px"}},fmt(fixPd)+" paid \u00B7 "+fmt(fixPn)+" pending")),h(Btn,{T:T,onClick:function(){setABill(true);},label:"+ add",primary:true})),
+aBill?h("div",{style:{padding:"14px",marginBottom:"10px",background:T.c,borderRadius:"16px",border:"1px solid "+T.a+"33"}},h("input",{value:nBN,onChange:function(e){setNBN(e.target.value);},placeholder:"Bill name…",style:is_}),h("input”,{value:nBA,onChange:function(e){setNBA(e.target.value);},placeholder:"Amount…",type:"number",style:is_}),h("div",{style:{display:"flex",gap:"8px"}},h(Btn,{T:T,onClick:addBillFn,label:"add bill",primary:true}),h(Btn,{T:T,onClick:function(){setABill(false);},label:"cancel"}))):null,
 items,
-h(“div”,{style:{marginTop:“10px”,borderRadius:“14px”,overflow:“hidden”}},
-h(“div”,{style:{display:“flex”,justifyContent:“space-between”,padding:“10px 14px”,background:T.al+“66”}},h(“span”,{style:{fontSize:“12px”,fontWeight:600,color:T.ad}},“PAID”),h(“span”,{style:{fontSize:“12px”,fontWeight:700,color:T.ad}},fmt(fixPd))),
-h(“div”,{style:{display:“flex”,justifyContent:“space-between”,padding:“10px 14px”,background:”#FFF8E8”}},h(“span”,{style:{fontSize:“12px”,fontWeight:600,color:”#A08840”}},“PENDING”),h(“span”,{style:{fontSize:“12px”,fontWeight:700,color:”#A08840”}},fmt(fixPn))),
-h(“div”,{style:{display:“flex”,justifyContent:“space-between”,padding:“12px 14px”,background:T.hbg}},h(“span”,{style:{fontWeight:700,color:T.ht}},“TOTAL”),h(“span”,{style:{fontWeight:700,color:T.ht}},fmt(fixT)))
+h("div",{style:{marginTop:"10px",borderRadius:"14px",overflow:"hidden"}},
+h("div",{style:{display:"flex",justifyContent:"space-between",padding:"10px 14px",background:T.al+"66"}},h("span",{style:{fontSize:"12px",fontWeight:600,color:T.ad}},"PAID"),h("span",{style:{fontSize:"12px",fontWeight:700,color:T.ad}},fmt(fixPd))),
+h("div",{style:{display:"flex",justifyContent:"space-between",padding:"10px 14px",background:"#FFF8E8"}},h("span",{style:{fontSize:"12px",fontWeight:600,color:"#A08840"}},"PENDING"),h("span",{style:{fontSize:"12px",fontWeight:700,color:"#A08840"}},fmt(fixPn))),
+h("div",{style:{display:"flex",justifyContent:"space-between",padding:"12px 14px",background:T.hbg}},h("span",{style:{fontWeight:700,color:T.ht}},"TOTAL"),h("span",{style:{fontWeight:700,color:T.ht}},fmt(fixT)))
 )
 );
 }
