@@ -76,7 +76,7 @@ return h("button",{onClick:p.onClick,style:{padding:"8px 20px",background:p.prim
 function App(){
 var lr=useRef(false);
 var _m=useState(initMonths),months=_m[0],setMonths=_m[1];
-var _cm=useState("APR"),cm=_cm[0],setCm=_cm[1];
+var _cm=useState(MK[new Date (). getMonth ()]),cm=_cm[0],setCm=_cm[1];
 var _tab=useState("home"),tab=_tab[0],setTab=_tab[1];
 var _ea=useState(false),editAff=_ea[0],setEditAff=_ea[1];
 var _ta=useState(""),tempAff=_ta[0],setTempAff=_ta[1];
