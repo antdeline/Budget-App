@@ -150,7 +150,7 @@ var txT=data.transactions.reduce(function(s,t){return s+t.amt;},0);
 var lms=data.lastMonthSurplus||0;
 var totA=data.income+lms;
 var ndb=totA-txT;
-var sur=ndb-fixPn-data.variableBills.reduce(function(s,b){var p=b.budget-b.spent;return s+(p>0?p:0);},0);
+var sur=ndb-fixPn;
 var pdCt=data.fixedBills.filter(function(b){return b.isPaid;}).length;
 var blCt=data.fixedBills.length||1;
 var pdP=Math.round((pdCt/blCt)*100);
