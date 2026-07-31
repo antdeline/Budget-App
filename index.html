@@ -357,10 +357,12 @@ function App(){
   var _txS=useState(""),txS=_txS[0],setTxS=_txS[1];
   var _txA=useState(""),txA=_txA[0],setTxA=_txA[1];
   var _txC=useState(""),txC=_txC[0],setTxC=_txC[1];
+  var _txN=useState(""),txN=_txN[0],setTxN=_txN[1];
   var _eTx=useState(null),eTx=_eTx[0],setETx=_eTx[1];
   var _eTxS=useState(""),eTxS=_eTxS[0],setETxS=_eTxS[1];
   var _eTxA=useState(""),eTxA=_eTxA[0],setETxA=_eTxA[1];
   var _eTxC=useState(""),eTxC=_eTxC[0],setETxC=_eTxC[1];
+  var _eTxN=useState(""),eTxN=_eTxN[0],setETxN=_eTxN[1];
 
   var _eW=useState(null),eW=_eW[0],setEW=_eW[1];
   var _eWN=useState(""),eWN=_eWN[0],setEWN=_eWN[1];
@@ -392,6 +394,11 @@ function App(){
     }
     lr.current=true;
   },[]);
+
+  useEffect(function(){
+    var el=document.querySelector('.month-pill.active');
+    if(el)el.scrollIntoView({inline:'center',block:'nearest',behavior:'auto'});
+  },[cm]);
 
   function save(u,sg,dbt){
     setMonths(u);
@@ -435,7 +442,7 @@ function App(){
   // ---- Transaction handlers ----
   function addTxn(){
     if(!txS||!txA)return;
-    var nt={store:txS,amt:parseFloat(txA)||0,cat:txC||""};
+    var nt={store:txS,amt:parseFloat(txA)||0,cat:txC||"",note:txN||""};
     var tx=data.transactions.concat([nt]);
     var vb=data.variableBills.slice();
     if(txC){
@@ -443,12 +450,12 @@ function App(){
       if(ci>=0)vb[ci]=Object.assign({},vb[ci],{spent:tx.filter(function(t){return t.cat===txC;}).reduce(function(s,t){return s+t.amt;},0)});
     }
     upd({transactions:tx,variableBills:vb});
-    setTxS("");setTxA("");setTxC("");setAddTx(false);
+    setTxS("");setTxA("");setTxC("");setTxN("");setAddTx(false);
   }
-  function openTx(i){var t=data.transactions[i];setETx(i);setETxS(t.store);setETxA(t.amt.toString());setETxC(t.cat||"");}
+  function openTx(i){var t=data.transactions[i];setETx(i);setETxS(t.store);setETxA(t.amt.toString());setETxC(t.cat||"");setETxN(t.note||"");}
   function saveTx(){
     var tx=data.transactions.slice();var oc=tx[eTx].cat||"";
-    tx[eTx]=Object.assign({},tx[eTx],{store:eTxS,amt:parseFloat(eTxA)||0,cat:eTxC||""});
+    tx[eTx]=Object.assign({},tx[eTx],{store:eTxS,amt:parseFloat(eTxA)||0,cat:eTxC||"",note:eTxN||""});
     var vb=data.variableBills.slice();
     [oc,eTxC].filter(Boolean).forEach(function(cat){
       var ci=vb.findIndex(function(b){return b.name===cat;});
@@ -746,6 +753,7 @@ function App(){
           h("option",{value:""},"Category (optional)"),
           data.variableBills.map(function(b){return h("option",{key:b.name,value:b.name},b.name);})
         ),
+        h("input",{className:"is_",placeholder:"Note (optional)...",value:txN,onChange:function(e){setTxN(e.target.value);}}),
         h("div",{style:{display:"flex",gap:"8px"}},h("button",{className:"btnp",onClick:addTxn},"save"),h("button",{className:"btns",onClick:function(){setAddTx(false);}},"cancel"))
       ):null,
       h(FairyLights,{total:Math.max(data.transactions.length,4)}),
@@ -758,10 +766,14 @@ function App(){
             h("option",{value:""},"No category"),
             data.variableBills.map(function(b){return h("option",{key:b.name,value:b.name},b.name);})
           ),
+          h("input",{className:"is_",placeholder:"Note (optional)...",value:eTxN,onChange:function(e){setETxN(e.target.value);}}),
           h("div",{style:{display:"flex",gap:"6px"}},h("button",{className:"btnp",onClick:saveTx},"save"),h("button",{className:"btns",onClick:function(){setETx(null);}},"cancel"),h("button",{className:"btnd",onClick:function(){delTx(i);}},"delete"))
         );
         return h("div",{key:i,className:"row-card",onClick:function(){openTx(i);}},
-          h("div",{className:"row-info"},h("span",{className:"row-name"},t.store),t.cat?h("span",{className:"cat-tag"},t.cat):null),
+          h("div",{className:"row-info"},
+            h("div",null,h("span",{className:"row-name"},t.store),t.cat?h("span",{className:"cat-tag"},t.cat):null),
+            t.note?h("div",{style:{fontSize:"11px",color:"#D0A0BC",fontStyle:"italic",marginTop:"2px"}},t.note):null
+          ),
           h("div",{className:"row-amt"},fmt(t.amt))
         );
       }),
@@ -890,4 +902,3 @@ function App(){
 ReactDOM.render(h(App),document.getElementById("app"));
 </script>
 </body>
-</html>
